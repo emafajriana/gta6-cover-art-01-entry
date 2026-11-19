@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2c2350"/><stop offset=".6" stop-color="#7a4a8f"/><stop offset="1" stop-color="#ff9a76"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4a2b58"/><stop offset="1" stop-color="#1c1030"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1200" fill="url(#sky)"/>
+  <circle cx="250" cy="240" r="90" fill="#ffe9a8" opacity=".9"/>
+  <g fill="#241640">
+    <rect x="0" y="520" width="110" height="380"/><rect x="130" y="600" width="80" height="300"/>
+    <rect x="230" y="480" width="120" height="420"/><rect x="560" y="540" width="90" height="360"/>
+    <rect x="670" y="460" width="110" height="440"/><rect x="800" y="580" width="100" height="320"/>
+  </g>
+  <g fill="#ffd166" opacity=".85">
+    <rect x="30" y="560" width="14" height="14"/><rect x="70" y="620" width="14" height="14"/><rect x="160" y="640" width="14" height="14"/>
+    <rect x="260" y="520" width="14" height="14"/><rect x="310" y="580" width="14" height="14"/><rect x="600" y="580" width="14" height="14"/>
+    <rect x="700" y="500" width="14" height="14"/><rect x="740" y="560" width="14" height="14"/><rect x="830" y="620" width="14" height="14"/>
+  </g>
+  <g stroke="#1c1030" stroke-width="10" stroke-linecap="round" fill="none">
+    <path d="M120 900 C 130 760, 110 680, 150 610"/><path d="M790 900 C 780 770, 810 690, 770 620"/>
+  </g>
+  <g fill="#1c1030">
+    <path d="M150 610 q -90 -30 -150 30 q 70 10 150 -30Z"/><path d="M150 610 q -20 -95 40 -140 q 10 70 -40 140Z"/>
+    <path d="M150 610 q 90 -40 160 10 q -70 20 -160 -10Z"/>
+    <path d="M770 620 q -90 -30 -150 30 q 70 10 150 -30Z"/><path d="M770 620 q -20 -95 40 -140 q 10 70 -40 140Z"/>
+    <path d="M770 620 q 90 -40 160 10 q -70 20 -160 -10Z"/>
+  </g>
+  <rect y="900" width="900" height="300" fill="url(#floor)"/>
+  <!-- man on the rooftop -->
+  <g>
+    <path d="M330 900 L 340 720 Q 450 680 560 720 L 570 900 Z" fill="#e8f0e4"/>
+    <path d="M400 700 L 450 770 L 500 700 L 520 900 L 380 900 Z" fill="#2f6f5e"/>
+    <g fill="#ff5e8a"><circle cx="400" cy="760" r="10"/><circle cx="480" cy="820" r="10"/><circle cx="520" cy="750" r="10"/><circle cx="430" cy="870" r="10"/></g>
+    <path d="M430 700 L 450 730 L 470 700" stroke="#ffd166" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M410 700 Q 450 760 490 700" stroke="#ffd166" stroke-width="6" fill="none"/>
+    <path d="M380 650 Q 370 540 450 520 Q 530 540 520 650 Q 450 690 380 650Z" fill="#3a2a1a"/>
+    <circle cx="450" cy="600" r="88" fill="#e8b48a"/>
+    <path d="M365 590 Q 360 480 450 470 Q 540 480 535 590 Q 520 510 450 505 Q 380 510 365 590Z" fill="#2b1c10"/>
+    <path d="M368 600 Q 380 690 450 700 Q 520 690 532 600 L 520 640 Q 450 665 380 640 Z" fill="#2b1c10"/>
+    <circle cx="412" cy="600" r="10" fill="#241a12"/><circle cx="488" cy="600" r="10" fill="#241a12"/>
+    <path d="M415 650 Q 450 668 485 650" stroke="#8a4a2a" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M340 730 Q 300 820 320 900" stroke="#e8b48a" stroke-width="36" fill="none" stroke-linecap="round"/>
+    <path d="M560 730 Q 600 820 580 900" stroke="#e8b48a" stroke-width="36" fill="none" stroke-linecap="round"/>
+    <rect x="330" y="880" width="240" height="20" rx="10" fill="#ffd166"/>
+  </g>
+</svg>

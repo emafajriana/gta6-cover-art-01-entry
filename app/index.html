@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sunset Cover Studio — GTA-style cover art maker</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<main class="app">
+  <section class="controls" aria-label="Cover controls">
+    <header>
+      <h1>Sunset Cover Studio</h1>
+      <p class="tagline">Your photo + a caption = multi-panel cover art. Offline — photos never leave this machine.</p>
+    </header>
+
+    <section class="group" aria-label="Photos">
+      <h2>1 · Photos</h2>
+      <p class="hint">Drop photos onto a slot, or pick a file. Click a panel on the cover to edit it.</p>
+      <div class="slots" id="slots"></div>
+      <div class="samples">
+        <span>No photo handy? Try a sample:</span>
+        <button type="button" data-sample="boulevard">Boulevard</button>
+        <button type="button" data-sample="rooftop">Rooftop</button>
+        <button type="button" data-sample="neon">Neon night</button>
+      </div>
+    </section>
+
+    <section class="group" aria-label="Layout">
+      <h2>2 · Layout</h2>
+      <div class="seg" id="layouts" role="group" aria-label="Panel layout"></div>
+      <label class="row">Panel <span id="panelLabel">1</span> uses photo
+        <select id="panelPhoto"></select>
+      </label>
+      <label class="row">Zoom <input id="zoom" type="range" min="1" max="3" step="0.01" value="1"></label>
+      <label class="row">Pan X <input id="panX" type="range" min="-0.5" max="0.5" step="0.01" value="0"></label>
+      <label class="row">Pan Y <input id="panY" type="range" min="-0.5" max="0.5" step="0.01" value="0"></label>
+      <p class="hint">Tip: drag the photo inside a panel to move it, scroll over it to zoom.</p>
+    </section>
+
+    <section class="group" aria-label="Caption">
+      <h2>3 · Caption</h2>
+      <label>Title <input id="title" type="text" maxlength="32" value="SUNSET HEIST"></label>
+      <label>Subtitle <input id="subtitle" type="text" maxlength="40" value="a vice city story"></label>
+      <label class="row">Title size <input id="titleSize" type="range" min="0.7" max="1.4" step="0.05" value="1"></label>
+    </section>
+
+    <section class="group" aria-label="Grade">
+      <h2>4 · Colour grade</h2>
+      <div class="seg" id="grades" role="group" aria-label="Colour grade"></div>
+      <label class="row">Grade strength <input id="gradeIntensity" type="range" min="0" max="1" step="0.05" value="0.85"></label>
+      <label class="check"><input id="frame" type="checkbox" checked> White poster frame</label>
+      <label class="check"><input id="grain" type="checkbox" checked> Film grain</label>
+      <label class="check"><input id="vignette" type="checkbox" checked> Vignette</label>
+    </section>
+
+    <section class="group" aria-label="Export">
+      <h2>5 · Export PNG</h2>
+      <div class="seg" id="sizes" role="group" aria-label="Export size"></div>
+      <button id="export" type="button" class="primary">Export PNG — <span id="exportSize">1080 × 1080</span></button>
+      <button id="exportAll" type="button">Export all three sizes</button>
+      <p id="status" role="status"></p>
+    </section>
+
+    <footer>
+      <p>All artwork here is original: the lettering is Bebas Neue + Pacifico (SIL Open Font License, see app/fonts/). No Rockstar Games logo, artwork or fonts are used. Everything runs offline from these files.</p>
+    </footer>
+  </section>
+
+  <section class="stage" aria-label="Cover preview">
+    <canvas id="cover" width="1080" height="1080" aria-label="The cover preview"></canvas>
+    <p class="stage-hint">Click a panel to select it · drag to pan · scroll to zoom</p>
+  </section>
+</main>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
