@@ -1,62 +1,90 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1250" width="1000" height="1250">
   <defs>
     <linearGradient id="night" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#12082a"/><stop offset=".6" stop-color="#2c1150"/><stop offset="1" stop-color="#0a1f33"/>
+      <stop offset="0" stop-color="#0e0620"/>
+      <stop offset=".6" stop-color="#2a1050"/>
+      <stop offset="1" stop-color="#081c30"/>
     </linearGradient>
     <linearGradient id="wet" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#2c1150"/><stop offset="1" stop-color="#05060f"/>
+      <stop offset="0" stop-color="#33155c"/>
+      <stop offset="1" stop-color="#04050e"/>
     </linearGradient>
   </defs>
-  <rect width="900" height="1200" fill="url(#night)"/>
-  <!-- diner building -->
-  <rect x="60" y="180" width="780" height="560" fill="#1d0b33"/>
-  <rect x="60" y="180" width="780" height="40" fill="#ff2fd6"/>
+
+  <rect width="1000" height="1250" fill="url(#night)"/>
+
+  <!-- club front -->
+  <rect x="70" y="170" width="860" height="600" fill="#1a0a30"/>
+  <rect x="70" y="170" width="860" height="34" fill="#ff2fd6"/>
+  <g fill="#19e3ff">
+    <path d="M70 292 L155 214 L240 292 L325 214 L410 292 L495 214 L580 292 L665 214 L750 292 L835 214 L930 292 L930 330 L70 330 Z"/>
+  </g>
+  <!-- marquee -->
+  <rect x="120" y="344" width="760" height="118" rx="14" fill="#ffd76e"/>
+  <text x="500" y="428" font-family="Georgia, serif" font-style="italic" font-size="72" fill="#b3123f" text-anchor="middle">Starlight Club</text>
+  <g fill="#fff3b0">
+    <circle cx="150" cy="380" r="7"/><circle cx="150" cy="424" r="7"/><circle cx="150" cy="468" r="7"/>
+    <circle cx="850" cy="380" r="7"/><circle cx="850" cy="424" r="7"/><circle cx="850" cy="468" r="7"/>
+    <circle cx="230" cy="380" r="7"/><circle cx="770" cy="380" r="7"/><circle cx="230" cy="468" r="7"/><circle cx="770" cy="468" r="7"/>
+  </g>
+  <!-- windows -->
   <g>
-    <path d="M60 300 L 150 220 L 240 300 L 330 220 L 420 300 L 510 220 L 600 300 L 690 220 L 780 300 L 840 220 L 840 300 Z" fill="#19e3ff"/>
-    <rect x="90" y="330" width="720" height="120" rx="12" fill="#ffd166"/>
-    <text x="450" y="415" font-family="cursive" font-size="72" fill="#c2185b" text-anchor="middle">Diner</text>
+    <rect x="130" y="530" width="210" height="170" rx="10" fill="#19e3ff" opacity=".92"/>
+    <rect x="395" y="530" width="210" height="170" rx="10" fill="#67f2ff" opacity=".92"/>
+    <rect x="660" y="530" width="210" height="170" rx="10" fill="#19e3ff" opacity=".92"/>
+    <g stroke="#ff2fd6" stroke-width="6" fill="none" opacity=".85">
+      <rect x="130" y="530" width="210" height="170" rx="10"/>
+      <rect x="395" y="530" width="210" height="170" rx="10"/>
+      <rect x="660" y="530" width="210" height="170" rx="10"/>
+    </g>
+    <g fill="#0d2c40" opacity=".8">
+      <path d="M160 700 L200 560 L228 700 Z"/><path d="M255 700 L285 590 L310 700 Z"/>
+      <path d="M690 700 L725 575 L752 700 Z"/><path d="M790 700 L815 600 L838 700 Z"/>
+    </g>
   </g>
-  <g fill="#19e3ff" opacity=".9">
-    <rect x="110" y="500" width="180" height="140" rx="10"/><rect x="330" y="500" width="180" height="140" rx="10"/>
-    <rect x="550" y="500" width="180" height="140" rx="10"/>
-  </g>
-  <g stroke="#ff2fd6" stroke-width="6" fill="none" opacity=".8">
-    <rect x="110" y="500" width="180" height="140" rx="10"/><rect x="330" y="500" width="180" height="140" rx="10"/>
-    <rect x="550" y="500" width="180" height="140" rx="10"/>
-  </g>
-  <rect y="740" width="900" height="460" fill="url(#wet)"/>
-  <g opacity=".55">
-    <rect x="110" y="760" width="180" height="180" fill="#19e3ff"/>
-    <rect x="330" y="760" width="180" height="180" fill="#ff2fd6"/>
-    <rect x="550" y="760" width="180" height="180" fill="#ffd166"/>
-  </g>
-  <g stroke="#ffffff" stroke-width="4" opacity=".25"><line x1="0" y1="820" x2="900" y2="820"/><line x1="0" y1="980" x2="900" y2="980"/></g>
-  <!-- two friends laughing -->
+  <!-- vertical OPEN sign -->
   <g>
-    <path d="M250 760 Q 240 640 290 590 L 360 590 Q 410 640 400 760 Z" fill="#8a2be2"/>
-    <path d="M250 760 L 400 760 L 410 900 L 240 900 Z" fill="#8a2be2"/>
-    <circle cx="325" cy="520" r="78" fill="#c98d5f"/>
-    <path d="M250 510 Q 245 410 325 405 Q 405 410 400 510 Q 390 450 325 448 Q 260 450 250 510Z" fill="#14101c"/>
-    <path d="M285 520 Q 325 545 365 520" stroke="#5f2a18" stroke-width="7" fill="none" stroke-linecap="round"/>
-    <circle cx="295" cy="500" r="9" fill="#14101c"/><circle cx="355" cy="500" r="9" fill="#14101c"/>
-    <path d="M300 545 Q 325 565 350 545" stroke="#fff" stroke-width="8" fill="none" stroke-linecap="round"/>
-    <path d="M250 640 Q 210 720 230 800" stroke="#c98d5f" stroke-width="30" fill="none" stroke-linecap="round"/>
-    <path d="M400 640 Q 430 700 415 780" stroke="#c98d5f" stroke-width="30" fill="none" stroke-linecap="round"/>
+    <rect x="812" y="60" width="128" height="240" rx="16" fill="none" stroke="#ff2fd6" stroke-width="6"/>
+    <text x="876" y="128" font-family="Georgia, serif" font-size="52" fill="#ff9de2" text-anchor="middle">O</text>
+    <text x="876" y="182" font-family="Georgia, serif" font-size="52" fill="#ff9de2" text-anchor="middle">P</text>
+    <text x="876" y="236" font-family="Georgia, serif" font-size="52" fill="#ff9de2" text-anchor="middle">E</text>
+    <text x="876" y="290" font-family="Georgia, serif" font-size="52" fill="#ff9de2" text-anchor="middle">N</text>
   </g>
-  <g>
-    <path d="M500 760 Q 490 650 540 600 L 610 600 Q 660 650 650 760 Z" fill="#0e9aa8"/>
-    <path d="M500 760 L 650 760 L 660 900 L 490 900 Z" fill="#0e9aa8"/>
-    <circle cx="575" cy="520" r="78" fill="#f4c99b"/>
-    <path d="M500 515 Q 495 400 575 395 Q 655 400 650 515 Q 640 440 575 438 Q 510 440 500 515Z" fill="#c94b2d"/>
-    <path d="M500 515 Q 510 600 575 605 Q 640 600 650 515 L 635 480 Q 575 520 515 480 Z" fill="#c94b2d"/>
-    <circle cx="545" cy="505" r="9" fill="#14101c"/><circle cx="605" cy="505" r="9" fill="#14101c"/>
-    <path d="M545 540 Q 575 560 605 540" stroke="#fff" stroke-width="8" fill="none" stroke-linecap="round"/>
-    <path d="M500 650 Q 460 730 480 800" stroke="#f4c99b" stroke-width="30" fill="none" stroke-linecap="round"/>
-    <path d="M650 650 Q 690 720 670 790" stroke="#f4c99b" stroke-width="30" fill="none" stroke-linecap="round"/>
+
+  <!-- wet street -->
+  <rect y="770" width="1000" height="480" fill="url(#wet)"/>
+  <g opacity=".5">
+    <rect x="130" y="790" width="210" height="200" fill="#19e3ff"/>
+    <rect x="395" y="790" width="210" height="200" fill="#ff2fd6"/>
+    <rect x="660" y="790" width="210" height="200" fill="#ffd76e"/>
   </g>
-  <!-- neon sign -->
-  <g>
-    <rect x="640" y="120" width="200" height="90" rx="14" fill="none" stroke="#ff2fd6" stroke-width="6"/>
-    <text x="740" y="180" font-family="cursive" font-size="52" fill="#ff9de2" text-anchor="middle">OPEN</text>
+  <g stroke="#ffffff" stroke-width="4" opacity=".22">
+    <line x1="0" y1="860" x2="1000" y2="860"/>
+    <line x1="0" y1="1030" x2="1000" y2="1030"/>
+    <line x1="0" y1="1180" x2="1000" y2="1180"/>
+  </g>
+
+  <!-- two friends under the marquee -->
+  <g transform="translate(0 44)">
+    <path d="M268 800 Q258 668 312 612 L388 612 Q442 668 432 800 L438 960 L262 960 Z" fill="#7b2dbe"/>
+    <circle cx="350" cy="540" r="80" fill="#c98d5f"/>
+    <path d="M272 528 Q266 428 350 424 Q434 428 428 528 Q420 462 350 460 Q280 462 272 528 Z" fill="#120c18"/>
+    <path d="M276 545 Q350 600 424 545 L416 610 Q350 640 284 610 Z" fill="#120c18"/>
+    <circle cx="318" cy="522" r="9" fill="#14101c"/><circle cx="382" cy="522" r="9" fill="#14101c"/>
+    <path d="M312 566 Q350 592 388 566" stroke="#ffffff" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <path d="M272 660 Q226 748 246 838" stroke="#c98d5f" stroke-width="31" fill="none" stroke-linecap="round"/>
+    <path d="M428 660 Q462 736 444 830" stroke="#c98d5f" stroke-width="31" fill="none" stroke-linecap="round"/>
+    <path d="M300 700 L400 700 L406 770 L294 770 Z" fill="#ffd76e" opacity=".9"/>
+  </g>
+  <g transform="translate(0 44)">
+    <path d="M568 800 Q558 678 612 622 L688 622 Q742 678 732 800 L738 960 L562 960 Z" fill="#0e9aa8"/>
+    <circle cx="650" cy="540" r="80" fill="#f0bd8e"/>
+    <path d="M572 530 Q566 420 650 416 Q734 420 728 530 Q722 452 650 450 Q578 452 572 530 Z" fill="#c2491f"/>
+    <path d="M574 548 Q650 596 726 548 L714 622 Q650 650 586 622 Z" fill="#c2491f"/>
+    <circle cx="618" cy="524" r="9" fill="#14101c"/><circle cx="682" cy="524" r="9" fill="#14101c"/>
+    <path d="M612 568 Q650 594 688 568" stroke="#ffffff" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <path d="M572 670 Q530 752 550 842" stroke="#f0bd8e" stroke-width="31" fill="none" stroke-linecap="round"/>
+    <path d="M728 670 Q764 742 746 834" stroke="#f0bd8e" stroke-width="31" fill="none" stroke-linecap="round"/>
+    <circle cx="650" cy="716" r="30" fill="none" stroke="#ffd76e" stroke-width="7"/>
   </g>
 </svg>

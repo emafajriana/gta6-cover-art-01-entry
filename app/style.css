@@ -14,40 +14,47 @@
 }
 
 * { box-sizing: border-box; }
-html, body { margin: 0; min-height: 100%; background: #17101d; color: #f2ecf5; font: 15px/1.45 system-ui, -apple-system, 'Segoe UI', sans-serif; }
+html, body { margin: 0; min-height: 100%; background: #160e1c; color: #f3edf6; font: 15px/1.45 system-ui, -apple-system, 'Segoe UI', sans-serif; }
 .app { display: flex; gap: 0; height: 100vh; align-items: stretch; }
 
 .controls {
-  width: 360px; flex: 0 0 360px; padding: 20px 20px 28px;
-  background: linear-gradient(180deg, #241428 0%, #17101d 100%);
-  border-right: 1px solid #3a2440;
+  width: 364px; flex: 0 0 364px; padding: 20px 20px 28px;
+  background: linear-gradient(180deg, #251529 0%, #160e1c 100%);
+  border-right: 1px solid #3c2542;
   overflow-y: auto;
 }
 .controls header h1 {
   margin: 0; font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
-  font-size: 40px; letter-spacing: 1px; line-height: 1;
-  background: linear-gradient(90deg, #ffe259, #ffa751, #ff5e8a);
+  font-size: 41px; letter-spacing: 1px; line-height: 1;
+  background: linear-gradient(180deg, #bfe3ff 0%, #ffffff 48%, #7fa8dd 55%, #233f7d 78%, #c94b9e 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
-.tagline { margin: 6px 0 0; color: #c9b8d1; font-size: 13.5px; }
-.group { margin-top: 20px; padding-top: 14px; border-top: 1px solid #3a2440; }
+.tagline { margin: 6px 0 0; color: #cbb9d3; font-size: 13.5px; }
+.signature {
+  margin: 10px 0 0; padding: 8px 10px; font-size: 13px; color: #ffe9f6;
+  background: linear-gradient(90deg, rgba(255, 46, 136, .22), rgba(23, 195, 230, .18));
+  border: 1px solid #6b3560; border-radius: 8px;
+}
+.signature strong { color: #7df9ff; letter-spacing: .04em; }
+.group { margin-top: 20px; padding-top: 14px; border-top: 1px solid #3c2542; }
 .group h2 { margin: 0 0 8px; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: #ffb347; }
-.hint { margin: 6px 0 0; color: #9c8aa6; font-size: 12.5px; }
+.hint { margin: 6px 0 0; color: #9d8ba8; font-size: 12.5px; }
 label { display: flex; flex-direction: column; gap: 5px; font-weight: 600; font-size: 13px; margin-top: 8px; }
 label.row { flex-direction: row; align-items: center; gap: 10px; }
 label.row input[type=range] { flex: 1; }
+label.row select { flex: 1; }
 label.check { flex-direction: row; align-items: center; gap: 8px; font-weight: 500; }
 input[type=text], select {
-  font: inherit; color: #f2ecf5; background: #2c1b33;
-  padding: 8px 10px; border: 1px solid #4a2f55; border-radius: 6px;
+  font: inherit; color: #f3edf6; background: #2d1c34;
+  padding: 8px 10px; border: 1px solid #4c3057; border-radius: 6px;
 }
 input[type=text]:focus, select:focus, button:focus-visible { outline: 2px solid #ff5e8a; outline-offset: 1px; }
 input[type=file] { font: inherit; font-size: 12.5px; }
 button {
   font: inherit; font-weight: 700; padding: 10px 12px; border: 0; border-radius: 8px;
-  background: #3a2440; color: #fff; cursor: pointer;
+  background: #3c2542; color: #fff; cursor: pointer;
 }
-button:hover { background: #4a2f55; }
+button:hover { background: #4c3057; }
 button.primary {
   width: 100%; margin-top: 10px; padding: 13px;
   background: linear-gradient(90deg, #ff5e62, #ff9966); font-size: 16px;
@@ -55,25 +62,26 @@ button.primary {
 button.primary:hover { filter: brightness(1.1); }
 #exportAll { width: 100%; margin-top: 8px; }
 #status { min-height: 1.2em; margin: 8px 0 0; color: #7df9ff; font-size: 13px; }
-.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 .seg button { padding: 7px 10px; font-size: 13px; font-weight: 600; }
 .seg button[aria-pressed="true"] { background: #ff5e8a; }
+#layouts button[aria-pressed="true"] { background: linear-gradient(90deg, #ff2e88, #17c3e6); }
 .slots { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .slot {
-  border: 1.5px dashed #6b4a78; border-radius: 8px; padding: 8px;
+  border: 1.5px dashed #6e4c7b; border-radius: 8px; padding: 8px;
   min-height: 92px; display: flex; flex-direction: column; gap: 6px;
-  background: #221430;
+  background: #231431;
 }
 .slot.filled { border-style: solid; border-color: #ff5e8a; }
-.slot .thumb { width: 100%; height: 56px; object-fit: cover; border-radius: 4px; background: #17101d; }
+.slot .thumb { width: 100%; height: 56px; object-fit: cover; border-radius: 4px; background: #160e1c; }
 .slot .slot-name { font-size: 12px; font-weight: 700; color: #ffb347; }
-.slot.dragover { border-color: #7df9ff; background: #2c1b33; }
-.slot label { margin: 0; font-weight: 600; font-size: 12.5px; color: #fff; background: #3a2440; padding: 7px; border-radius: 6px; text-align: center; cursor: pointer; }
+.slot.dragover { border-color: #7df9ff; background: #2d1c34; }
+.slot label { margin: 0; font-weight: 600; font-size: 12.5px; color: #fff; background: #3c2542; padding: 7px; border-radius: 6px; text-align: center; cursor: pointer; }
 .slot label input[type=file] { display: none; }
-.slot .file-name { font-size: 12px; color: #c9b8d1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.samples { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 10px; font-size: 13px; color: #c9b8d1; }
+.slot .file-name { font-size: 12px; color: #cbb9d3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.samples { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 10px; font-size: 13px; color: #cbb9d3; }
 .samples button { padding: 6px 9px; font-size: 12.5px; }
-footer { margin-top: 22px; color: #7d6c88; font-size: 12px; }
+footer { margin-top: 22px; color: #7f6d8a; font-size: 12px; }
 footer p { margin: 0; }
 
 .stage {
@@ -82,7 +90,7 @@ footer p { margin: 0; }
   background:
     radial-gradient(900px 500px at 70% 10%, rgba(255, 94, 138, .18), transparent 60%),
     radial-gradient(700px 500px at 20% 90%, rgba(0, 229, 255, .12), transparent 60%),
-    #17101d;
+    #160e1c;
 }
 #cover {
   width: min(72vh, 62vw); height: auto; max-height: 82vh;
@@ -92,7 +100,7 @@ footer p { margin: 0; }
 #cover.wide { width: min(78vw, 110vh); }
 #cover.portrait { width: auto; height: min(82vh, 90vw); }
 #cover:active { cursor: grabbing; }
-.stage-hint { margin: 0; color: #9c8aa6; font-size: 13px; }
+.stage-hint { margin: 0; color: #9d8ba8; font-size: 13px; }
 
 /* Screenshot mode: cover only, edge to edge. */
 body.shot-cover { background: #fdfbf7; }

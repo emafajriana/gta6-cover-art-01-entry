@@ -1,51 +1,61 @@
-// shots.js — fixed scenes for screenshots, driven by the query string:
-//   ?shot=cover&photo=boulevard&layout=hero&grade=sunset&caption=Sunset%20Heist&size=square
-//   ?shot=editor&photo=rooftop&layout=grid&grade=neon&caption=Neon%20Nights&size=wide
-// `cover` hides the controls and shows the cover edge to edge; `editor`
-// shows the app with a photo loaded. window.__shotReady is set once the
-// cover has painted with its fonts, so a screenshot can wait on it.
-import { SAMPLES } from './main.js';
+// shots.js — fixed scenes for the entry's screenshots, driven by the
+// query string:
+//   ?shot=cover&photo=boulevard&layout=popout&grade=sunset&titlestyle=chrome&caption=Sunset%20Heist&size=wide
+//   ?shot=editor&photo=rooftop&layout=popout&grade=neon&caption=Neon%20Nights&size=wide
+// `cover` hides the controls and shows the cover edge to edge (the
+// app's own drawing of an exported cover); `editor` shows the studio
+// with its cast loaded. window.__shotReady is set once the cover has
+// painted with its fonts, so the screenshot can wait on it.
 
-const LAYOUT_ORDER = ['full', 'duo', 'trio', 'hero', 'grid', 'tilt'];
+const LAYOUT_ORDER = ['popout', 'hero', 'full', 'duo', 'trio', 'grid', 'tilt'];
 const GRADE_ORDER = ['sunset', 'neon', 'dusk', 'mono'];
 const SIZE_ORDER = ['square', 'portrait', 'wide'];
+const STYLE_ORDER = ['chrome', 'sunset', 'neon'];
+const SCENES = ['boulevard', 'rooftop', 'neon'];
 
 function pressSeg(id, order, key) {
   const buttons = document.querySelectorAll(`#${id} button`);
   buttons.forEach((b, i) => b.setAttribute('aria-pressed', String(order[i] === key)));
 }
 
-export async function runShot(shot, query, state, redraw, loadSample, setStatus) {
-  const photo = query.get('photo') || 'boulevard';
-  const layout = query.get('layout') || 'hero';
-  const grade = query.get('grade') || 'sunset';
-  const caption = query.get('caption') || 'Sunset Heist';
-  const subtitle = query.get('subtitle') || 'a vice city story';
-  const size = query.get('size') || 'square';
+function pick(order, value, fallback) {
+  return order.includes(value) ? value : fallback;
+}
 
-  state.layout = LAYOUT_ORDER.includes(layout) ? layout : 'hero';
-  state.grade = GRADE_ORDER.includes(grade) ? grade : 'sunset';
-  state.title = caption;
-  state.subtitle = subtitle;
-  state.size = SIZE_ORDER.includes(size) ? size : 'square';
+export async function runShot(shot, query, api) {
+  const { state, redraw, loadSample, setStatus, samples } = api;
+  const photo = query.get('photo') || 'boulevard';
+
+  state.layout = pick(LAYOUT_ORDER, query.get('layout'), 'popout');
+  state.grade = pick(GRADE_ORDER, query.get('grade'), 'sunset');
+  state.titleStyle = pick(STYLE_ORDER, query.get('titlestyle'), 'chrome');
+  state.title = query.get('caption') || 'Sunset Heist';
+  state.subtitle = query.get('subtitle') || 'a vice city story';
+  state.size = pick(SIZE_ORDER, query.get('size'), 'square');
   if (query.get('titleSize')) state.titleSize = Number(query.get('titleSize'));
   if (query.get('gradeIntensity')) state.gradeIntensity = Number(query.get('gradeIntensity'));
+  if (query.get('burst')) state.burst = Number(query.get('burst'));
 
   // Keep the visible controls in sync with the scene.
-  document.getElementById('title').value = caption;
-  document.getElementById('subtitle').value = subtitle;
+  document.getElementById('title').value = state.title;
+  document.getElementById('subtitle').value = state.subtitle;
+  document.getElementById('titleStyles').style.display = '';
   pressSeg('layouts', LAYOUT_ORDER, state.layout);
   pressSeg('grades', GRADE_ORDER, state.grade);
   pressSeg('sizes', SIZE_ORDER, state.size);
+  pressSeg('titleStyles', STYLE_ORDER, state.titleStyle);
+  document.getElementById('popoutControls').style.display = state.layout === 'popout' ? '' : 'none';
   document.getElementById('exportSize').textContent =
     { square: '1080 × 1080', portrait: '1080 × 1350', wide: '1920 × 1080' }[state.size];
 
-  // Fill every panel: the chosen sample first, the other two samples in
-  // the remaining slots, so no panel shows a placeholder.
-  const order = [photo, ...SAMPLES.filter((s) => s !== photo)];
-  for (let i = 0; i < order.length; i++) {
-    await loadSample(i, order[i]);
+  // Cast the cover: the chosen scene in the hero slot, the other two
+  // scenes beside it, and the cut-out star in the star slot, so a
+  // Pop-Out scene has someone to burst out of the frame.
+  const scenes = [photo, ...SCENES.filter((s) => s !== photo)];
+  for (let i = 0; i < scenes.length; i++) {
+    await loadSample(i, scenes[i]);
   }
+  await loadSample(state.starSlot, samples.includes('star') ? 'star' : scenes[0]);
   state.panelPhoto = [0, 1, 2, 0];
 
   if (shot === 'cover') document.body.classList.add('shot-cover');
