@@ -1,9 +1,9 @@
 // serve.ts — a pocket static server for trying the studio locally:
 //   node serve.ts [--port 8080]
-// serves app/ at http://localhost:8080 with the MIME types an offline
-// web app needs. Node 22 standard library only, no build step. It
-// answers files from inside app/ and nothing else — a development
-// convenience for this machine, not a server for the internet.
+// serves app/ at http://localhost:8080 with the content types an
+// offline web app needs. Node 22 standard library only, no build
+// step, and it answers files from inside app/ and nothing else — a
+// development convenience for this machine, not a public server.
 import { createReadStream, statSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { extname, join, resolve, sep } from 'node:path';
@@ -16,7 +16,7 @@ const flagAt = args.indexOf('--port');
 const wanted = flagAt === -1 ? 8080 : Number(args[flagAt + 1]);
 const port = Number.isInteger(wanted) && wanted > 0 && wanted < 65536 ? wanted : 8080;
 
-const TYPES: Record<string, string> = {
+const TYPES = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
@@ -29,16 +29,12 @@ const TYPES: Record<string, string> = {
   '.webp': 'image/webp',
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon',
-  '.ttf': 'font/ttf',
-  '.otf': 'font/otf',
-  '.woff': 'font/woff',
-  '.woff2': 'font/woff2',
   '.wasm': 'application/wasm',
   '.txt': 'text/plain; charset=utf-8',
 };
 
 createServer((req, res) => {
-  let pathname: string;
+  let pathname;
   try {
     pathname = decodeURIComponent(new URL(req.url ?? '/', 'http://localhost').pathname);
   } catch {
@@ -51,7 +47,7 @@ createServer((req, res) => {
     res.writeHead(403).end('forbidden');
     return;
   }
-  let size: number;
+  let size;
   try {
     const st = statSync(file);
     if (!st.isFile()) throw new Error('not a file');

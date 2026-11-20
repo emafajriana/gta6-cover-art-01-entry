@@ -1,8 +1,9 @@
-// main.js — the studio floor of Sunset Cover Studio: photo slots, the
-// layout / grade / size / lettering pickers, per-panel crop controls,
-// drag-to-pan on the preview, and PNG export. cover.js paints the
-// poster; this file owns the state it paints from and every control
-// that changes it.
+// main.js — the studio floor of Sunset Cover Studio. cover.js paints
+// the poster; this file owns the state it paints from and every
+// control that changes it: four photo slots with drag-and-drop, the
+// layout / grade / size / lettering pickers, the pop-out controls,
+// per-panel crop (click a panel, drag to pan, scroll to zoom), and
+// the PNG export buttons.
 import { drawCover, layoutPanels, SIZES, GRADES, LAYOUTS, TITLE_STYLES } from './cover.js';
 import { runShot } from './shots.js';
 
@@ -30,6 +31,7 @@ export const state = {
 
 const canvas = document.getElementById('cover');
 const statusEl = document.getElementById('status');
+const $ = (id) => document.getElementById(id);
 
 export function loadImage(url) {
   return new Promise((resolve, reject) => {
@@ -40,10 +42,11 @@ export function loadImage(url) {
   });
 }
 
-// Does this image carry real transparency? A cut-out star needs alpha
-// to burst out of its panel as itself; an opaque photo bursts out in
-// an oval portal instead. Sample a coarse grid once, at load.
-function detectCutout(img) {
+// Does this picture carry real transparency? A cut-out star needs
+// alpha to burst out of its panel as itself; an opaque photo bursts
+// out inside an oval portal instead. Probe a coarse grid once, at
+// load time, and remember the answer on the slot.
+function looksCutOut(img) {
   try {
     const probe = document.createElement('canvas');
     probe.width = 48;
@@ -79,8 +82,8 @@ function setStatus(text) {
   statusEl.textContent = text;
 }
 
-// ---- photo slots ------------------------------------------------------
-const slotsEl = document.getElementById('slots');
+// ---- photo slots ----------------------------------------------------
+
 const slotEls = [];
 
 function buildSlots() {
@@ -92,8 +95,7 @@ function buildSlots() {
       <label>Choose file <input type="file" accept="image/*" data-slot="${i}"></label>
       <span class="file-name"></span>
       <span class="hint">or drop an image here</span>`;
-    const input = div.querySelector('input');
-    input.addEventListener('change', async (e) => {
+    div.querySelector('input').addEventListener('change', async (e) => {
       const file = e.target.files[0];
       if (file) await setPhotoFromFile(i, file);
     });
@@ -105,7 +107,7 @@ function buildSlots() {
       const file = e.dataTransfer.files[0];
       if (file) await setPhotoFromFile(i, file);
     });
-    slotsEl.appendChild(div);
+    $('slots').appendChild(div);
     slotEls.push(div);
   });
 }
@@ -122,11 +124,10 @@ function setPhoto(i, img, name) {
   slot.zoom = 1;
   slot.ox = 0;
   slot.oy = 0;
-  slot.cutout = detectCutout(img);
+  slot.cutout = looksCutOut(img);
   const div = slotEls[i];
   div.classList.add('filled');
-  div.querySelector('.file-name').textContent =
-    slot.name + (slot.cutout ? ' (cut-out)' : '');
+  div.querySelector('.file-name').textContent = slot.name + (slot.cutout ? ' (cut-out)' : '');
   let thumb = div.querySelector('.thumb');
   if (!thumb) {
     thumb = document.createElement('img');
@@ -150,16 +151,21 @@ async function loadSample(i, sample) {
 document.querySelectorAll('[data-sample]').forEach((btn) => {
   btn.addEventListener('click', () => {
     const sample = btn.dataset.sample;
-    // The star sample belongs in the star slot; scenes fill the first
-    // empty slot, else slot A.
-    const i = sample === 'star'
-      ? state.starSlot
-      : (() => { const f = state.photos.findIndex((p) => !p.img); return f === -1 ? 0 : f; })();
+    // The star sample belongs in the star slot; a scene fills the
+    // first empty slot, or slot A when the cast is already full.
+    let i;
+    if (sample === 'star') {
+      i = state.starSlot;
+    } else {
+      const firstEmpty = state.photos.findIndex((p) => !p.img);
+      i = firstEmpty === -1 ? 0 : firstEmpty;
+    }
     loadSample(i, sample);
   });
 });
 
-// ---- segmented pickers --------------------------------------------------
+// ---- segmented pickers ----------------------------------------------
+
 function buildSeg(el, entries, current, onPick) {
   Object.entries(entries).forEach(([key, value]) => {
     const b = document.createElement('button');
@@ -176,37 +182,38 @@ function buildSeg(el, entries, current, onPick) {
   });
 }
 
-buildSeg(document.getElementById('layouts'), LAYOUTS, state.layout, (key) => {
+buildSeg($('layouts'), LAYOUTS, state.layout, (key) => {
   state.layout = key;
   state.selectedPanel = 0;
-  document.getElementById('popoutControls').style.display = key === 'popout' ? '' : 'none';
+  $('popoutControls').style.display = key === 'popout' ? '' : 'none';
   redraw();
 });
-buildSeg(document.getElementById('grades'), GRADES, state.grade, (key) => {
+buildSeg($('grades'), GRADES, state.grade, (key) => {
   state.grade = key;
   redraw();
 });
-buildSeg(document.getElementById('sizes'), SIZES, state.size, (key) => {
+buildSeg($('sizes'), SIZES, state.size, (key) => {
   state.size = key;
-  document.getElementById('exportSize').textContent = SIZES[key].label.replace(' x ', ' × ');
+  $('exportSize').textContent = SIZES[key].label.replace(' x ', ' × ');
   redraw();
 });
-buildSeg(document.getElementById('titleStyles'), TITLE_STYLES, state.titleStyle, (key) => {
+buildSeg($('titleStyles'), TITLE_STYLES, state.titleStyle, (key) => {
   state.titleStyle = key;
   redraw();
 });
 
-// ---- caption, grade and pop-out controls ---------------------------------
-document.getElementById('title').addEventListener('input', (e) => { state.title = e.target.value; redraw(); });
-document.getElementById('subtitle').addEventListener('input', (e) => { state.subtitle = e.target.value; redraw(); });
-document.getElementById('titleSize').addEventListener('input', (e) => { state.titleSize = Number(e.target.value); redraw(); });
-document.getElementById('gradeIntensity').addEventListener('input', (e) => { state.gradeIntensity = Number(e.target.value); redraw(); });
-document.getElementById('burst').addEventListener('input', (e) => { state.burst = Number(e.target.value); redraw(); });
-document.getElementById('frame').addEventListener('change', (e) => { state.frame = e.target.checked; redraw(); });
-document.getElementById('grain').addEventListener('change', (e) => { state.grain = e.target.checked; redraw(); });
-document.getElementById('vignette').addEventListener('change', (e) => { state.vignette = e.target.checked; redraw(); });
+// ---- caption, grade and pop-out controls ----------------------------
 
-const starSel = document.getElementById('starPhoto');
+$('title').addEventListener('input', (e) => { state.title = e.target.value; redraw(); });
+$('subtitle').addEventListener('input', (e) => { state.subtitle = e.target.value; redraw(); });
+$('titleSize').addEventListener('input', (e) => { state.titleSize = Number(e.target.value); redraw(); });
+$('gradeIntensity').addEventListener('input', (e) => { state.gradeIntensity = Number(e.target.value); redraw(); });
+$('burst').addEventListener('input', (e) => { state.burst = Number(e.target.value); redraw(); });
+$('frame').addEventListener('change', (e) => { state.frame = e.target.checked; redraw(); });
+$('grain').addEventListener('change', (e) => { state.grain = e.target.checked; redraw(); });
+$('vignette').addEventListener('change', (e) => { state.vignette = e.target.checked; redraw(); });
+
+const starSel = $('starPhoto');
 SLOT_NAMES.forEach((name, i) => {
   const o = document.createElement('option');
   o.value = i;
@@ -216,8 +223,9 @@ SLOT_NAMES.forEach((name, i) => {
 starSel.value = String(state.starSlot);
 starSel.addEventListener('change', (e) => { state.starSlot = Number(e.target.value); redraw(); });
 
-// ---- per-panel crop controls ----------------------------------------------
-const panelPhotoSel = document.getElementById('panelPhoto');
+// ---- per-panel crop controls -----------------------------------------
+
+const panelPhotoSel = $('panelPhoto');
 SLOT_NAMES.forEach((name, i) => {
   const o = document.createElement('option');
   o.value = i;
@@ -233,23 +241,24 @@ function currentPhoto() {
 function syncPanelControls() {
   const panels = layoutPanels(state.layout, canvas.width, canvas.height);
   if (state.selectedPanel >= panels.length) state.selectedPanel = 0;
-  document.getElementById('panelLabel').textContent = `${state.selectedPanel + 1} of ${panels.length}`;
+  $('panelLabel').textContent = `${state.selectedPanel + 1} of ${panels.length}`;
   panelPhotoSel.value = String(state.panelPhoto[state.selectedPanel] ?? 0);
   const photo = currentPhoto();
-  document.getElementById('zoom').value = photo ? photo.zoom : 1;
-  document.getElementById('panX').value = photo ? photo.ox : 0;
-  document.getElementById('panY').value = photo ? photo.oy : 0;
+  $('zoom').value = photo ? photo.zoom : 1;
+  $('panX').value = photo ? photo.ox : 0;
+  $('panY').value = photo ? photo.oy : 0;
 }
 
 panelPhotoSel.addEventListener('change', (e) => {
   state.panelPhoto[state.selectedPanel] = Number(e.target.value);
   redraw();
 });
-document.getElementById('zoom').addEventListener('input', (e) => { const p = currentPhoto(); if (p) { p.zoom = Number(e.target.value); redraw(); } });
-document.getElementById('panX').addEventListener('input', (e) => { const p = currentPhoto(); if (p) { p.ox = Number(e.target.value); redraw(); } });
-document.getElementById('panY').addEventListener('input', (e) => { const p = currentPhoto(); if (p) { p.oy = Number(e.target.value); redraw(); } });
+$('zoom').addEventListener('input', (e) => { const p = currentPhoto(); if (p) { p.zoom = Number(e.target.value); redraw(); } });
+$('panX').addEventListener('input', (e) => { const p = currentPhoto(); if (p) { p.ox = Number(e.target.value); redraw(); } });
+$('panY').addEventListener('input', (e) => { const p = currentPhoto(); if (p) { p.oy = Number(e.target.value); redraw(); } });
 
-// ---- drag to pan / scroll to zoom on the preview ---------------------------
+// ---- drag to pan, scroll to zoom, on the preview itself ---------------
+
 function panelAt(clientX, clientY) {
   const rect = canvas.getBoundingClientRect();
   const x = ((clientX - rect.left) / rect.width) * canvas.width;
@@ -309,7 +318,8 @@ canvas.addEventListener('wheel', (e) => {
   redraw();
 }, { passive: false });
 
-// ---- export ------------------------------------------------------------------
+// ---- export ------------------------------------------------------------
+
 function renderOffscreen(sizeKey) {
   const size = SIZES[sizeKey];
   const off = document.createElement('canvas');
@@ -333,14 +343,14 @@ function downloadCanvas(off, sizeKey) {
   });
 }
 
-document.getElementById('export').addEventListener('click', async () => {
+$('export').addEventListener('click', async () => {
   setStatus('Exporting…');
   await downloadCanvas(renderOffscreen(state.size), state.size);
   const size = SIZES[state.size];
   setStatus(`Saved sunset-cover-${size.w}x${size.h}.png — share it anywhere.`);
 });
 
-document.getElementById('exportAll').addEventListener('click', async () => {
+$('exportAll').addEventListener('click', async () => {
   setStatus('Exporting all three sizes…');
   for (const key of Object.keys(SIZES)) {
     await downloadCanvas(renderOffscreen(key), key);
@@ -349,27 +359,27 @@ document.getElementById('exportAll').addEventListener('click', async () => {
   setStatus('Saved all three: 1080×1080, 1080×1350 and 1920×1080.');
 });
 
-// ---- boot ----------------------------------------------------------------------
+// ---- boot ---------------------------------------------------------------
+
 buildSlots();
 const params = new URLSearchParams(location.search);
 const shot = params.get('shot');
 if (shot) {
-  // Screenshot scenes (?shot=cover / ?shot=editor) set up a fixed state.
+  // Screenshot scenes (?shot=cover / ?shot=editor) stage a fixed cast
+  // and caption so the entry's screenshots are reproducible.
   runShot(shot, params, { state, redraw, loadSample, setStatus, samples: SAMPLES });
 } else {
-  // Fast path: the full cast is already loaded — the star in slot D and
-  // a scene in every panel — so the first export is two clicks away.
+  // The fast path: the whole cast is already on stage — a scene in
+  // every panel and the star in her slot, already bursting out of
+  // the frame — so the first export is two clicks away.
   loadSample(0, 'boulevard')
     .then(() => loadSample(1, 'rooftop'))
     .then(() => loadSample(2, 'neon'))
     .then(() => loadSample(3, 'star'));
 }
-// Lettering must be ready before the first paint, or the title falls back.
-if (document.fonts) {
-  Promise.all([
-    document.fonts.load('16px "Bebas Neue"'),
-    document.fonts.load('16px "Pacifico"'),
-  ]).then(redraw).catch(() => redraw);
-  document.fonts.ready.then(redraw);
+// The lettering is system stacks, so there is nothing to wait on:
+// paint at once, and repaint if the platform's font set settles.
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(redraw).catch(() => {});
 }
 redraw();

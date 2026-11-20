@@ -1,21 +1,23 @@
-// cover.js — the poster renderer for Sunset Cover Studio.
+// cover.js — every pixel of a Sunset Cover Studio poster is painted
+// here. paintCover(ctx, W, H, state) draws one finished cover: a grid
+// of photo panels under a colour grade, a lettered title band along
+// the foot, and print finishes (poster frame, vignette, film grain).
+// The editor's live preview and the PNG exporter both call this one
+// function, so the file a user downloads is the picture they saw.
 //
-// drawCover(ctx, W, H, state) paints one whole cover: a multi-panel
-// photo grid with a colour grade, a big lettered title band and a few
-// print finishes (frame, vignette, grain). The live preview and the PNG
-// export both call it, so the file you download is the picture you saw.
+// The signature is POP-OUT: in the pop-out layout the hero panel's
+// star is painted a second time, standing taller than its panel, so
+// the subject breaks the frame — feet on the panel's bottom edge,
+// head and shoulders spilling over the top border and across the
+// gutter, ringed by a white keyline grown from the subject's own
+// silhouette. Head it with the retro-chrome title (a hard-horizon
+// metal gradient, bevel stroke, magenta/cyan offset shadows) and the
+// poster reads like an eighties arcade marquee.
 //
-// The studio's signature is POP-OUT mode: one panel's star is drawn a
-// second time, enlarged, so the subject spills out of its frame over
-// the gutter and the neighbouring panels — with a white keyline and a
-// soft shadow, the way a sticker bursts off a poster. Pair it with the
-// retro-chrome headline (hard-stop metallic gradient, bevelled edge,
-// magenta/cyan offset shadows) and the cover reads 1986 arcade-cabinet
-// chrome, not flat text.
-//
-// Everything is drawn in code from the user's own photos. No artwork,
-// logo or lettering is taken from any game; the two display faces are
-// OFL fonts bundled under app/fonts/.
+// Lettering ships NO font files. Headlines are set in a heavy
+// condensed system stack and squeezed a touch further on the canvas;
+// the chrome is gradient and shadow work, not a typeface. Everything
+// on the poster is drawn in code from the user's own photos.
 
 export const SIZES = {
   square: { w: 1080, h: 1080, label: '1080 x 1080', name: 'Square post' },
@@ -46,94 +48,92 @@ export const TITLE_STYLES = {
   neon: { name: 'Neon Glow', hint: 'bright tube lettering on dark plum' },
 };
 
-const TITLE_FONT = '"Bebas Neue", "Arial Narrow", "Liberation Sans Narrow", sans-serif';
-const SCRIPT_FONT = '"Pacifico", "Comic Sans MS", cursive';
+// Heavy condensed faces every desktop already owns, in falling order;
+// the canvas squeeze below narrows whichever one loads, so the
+// headline keeps its tall poster proportions on any machine.
+const HEADLINE_STACK =
+  '"Arial Narrow", "Liberation Sans Narrow", Impact, "Franklin Gothic Medium", sans-serif';
+const TAGLINE_STACK =
+  '"Segoe Script", "Bradley Hand", "Comic Sans MS", cursive';
+const HEADLINE_SQUEEZE = 0.84;
+
+function headlineFont(size) {
+  return `900 ${size}px ${HEADLINE_STACK}`;
+}
 
 // ---------------------------------------------------------------------
-// Geometry. Every layout returns panel rects {x, y, w, h, rot} in cover
-// pixels; the title band owns the bottom TITLE_BAND of the height and
-// the panels share what is above it.
+// Panel geometry. layoutPanels returns rects {x, y, w, h, rot} in
+// poster pixels. The title band owns the bottom BAND_SHARE of the
+// height; the panels share the rest.
 // ---------------------------------------------------------------------
 
-const TITLE_BAND = 0.19;
+const BAND_SHARE = 0.19;
 
 export function layoutPanels(layout, W, H) {
-  const top = H * (1 - TITLE_BAND);
-  const g = Math.max(6, Math.round(W * 0.008));
+  const panelFloor = H * (1 - BAND_SHARE);
+  const gap = Math.max(6, Math.round(W * 0.008));
   switch (layout) {
     case 'full':
-      return [{ x: 0, y: 0, w: W, h: top, rot: 0 }];
+      return [{ x: 0, y: 0, w: W, h: panelFloor, rot: 0 }];
     case 'duo':
       return [
-        { x: 0, y: 0, w: (W - g) / 2, h: top, rot: 0 },
-        { x: (W + g) / 2, y: 0, w: (W - g) / 2, h: top, rot: 0 },
+        { x: 0, y: 0, w: (W - gap) / 2, h: panelFloor, rot: 0 },
+        { x: (W + gap) / 2, y: 0, w: (W - gap) / 2, h: panelFloor, rot: 0 },
       ];
     case 'trio':
       return [0, 1, 2].map((i) => ({
-        x: ((W + g) / 3) * i,
+        x: ((W + gap) / 3) * i,
         y: 0,
-        w: (W - 2 * g) / 3,
-        h: top,
+        w: (W - 2 * gap) / 3,
+        h: panelFloor,
         rot: 0,
       }));
     case 'grid': {
-      const cw = (W - g) / 2;
-      const ch = (top - g) / 2;
+      const cellW = (W - gap) / 2;
+      const cellH = (panelFloor - gap) / 2;
       return [
-        { x: 0, y: 0, w: cw, h: ch, rot: 0 },
-        { x: cw + g, y: 0, w: cw, h: ch, rot: 0 },
-        { x: 0, y: ch + g, w: cw, h: ch, rot: 0 },
-        { x: cw + g, y: ch + g, w: cw, h: ch, rot: 0 },
+        { x: 0, y: 0, w: cellW, h: cellH, rot: 0 },
+        { x: cellW + gap, y: 0, w: cellW, h: cellH, rot: 0 },
+        { x: 0, y: cellH + gap, w: cellW, h: cellH, rot: 0 },
+        { x: cellW + gap, y: cellH + gap, w: cellW, h: cellH, rot: 0 },
       ];
     }
-    case 'hero': {
-      // A wide hero panel and a two-high column beside it.
-      const heroW = Math.round(W * 0.6);
-      const colX = heroW + g;
-      const colW = W - colX;
-      const ch = (top - g) / 2;
-      return [
-        { x: 0, y: 0, w: heroW, h: top, rot: 0 },
-        { x: colX, y: 0, w: colW, h: ch, rot: 0 },
-        { x: colX, y: ch + g, w: colW, h: ch, rot: 0 },
-      ];
-    }
+    case 'hero':
     case 'popout': {
-      // The same grid, dropped by a headroom strip: the hero's star
-      // bursts up out of the hero panel into that strip, so the
-      // overflow spills over the panel's top edge and stays on the
-      // poster (see drawPopOut).
-      const head = Math.round(H * 0.09);
+      // A wide hero panel with a two-high column beside it. Pop-Out
+      // drops the whole grid by a headroom strip so its star can
+      // burst up over the hero's top edge and stay on the poster.
+      const drop = layout === 'popout' ? Math.round(H * 0.09) : 0;
       const heroW = Math.round(W * 0.6);
-      const colX = heroW + g;
+      const colX = heroW + gap;
       const colW = W - colX;
-      const ch = (top - head - g) / 2;
+      const cellH = (panelFloor - drop - gap) / 2;
       return [
-        { x: 0, y: head, w: heroW, h: top - head, rot: 0 },
-        { x: colX, y: head, w: colW, h: ch, rot: 0 },
-        { x: colX, y: head + ch + g, w: colW, h: ch, rot: 0 },
+        { x: 0, y: drop, w: heroW, h: panelFloor - drop, rot: 0 },
+        { x: colX, y: drop, w: colW, h: cellH, rot: 0 },
+        { x: colX, y: drop + cellH + gap, w: colW, h: cellH, rot: 0 },
       ];
     }
     case 'tilt': {
       const pw = W * 0.47;
-      const ph = top * 0.8;
+      const ph = panelFloor * 0.8;
       return [
-        { x: W * 0.015, y: top * 0.03, w: pw, h: ph, rot: -0.055 },
-        { x: W * 0.515, y: top * 0.09, w: pw, h: ph, rot: 0.048 },
-        { x: W * 0.265, y: top * 0.17, w: pw, h: ph, rot: -0.014 },
+        { x: W * 0.015, y: panelFloor * 0.03, w: pw, h: ph, rot: -0.055 },
+        { x: W * 0.515, y: panelFloor * 0.09, w: pw, h: ph, rot: 0.048 },
+        { x: W * 0.265, y: panelFloor * 0.17, w: pw, h: ph, rot: -0.014 },
       ];
     }
     default:
-      return [{ x: 0, y: 0, w: W, h: top, rot: 0 }];
+      return [{ x: 0, y: 0, w: W, h: panelFloor, rot: 0 }];
   }
 }
 
 // ---------------------------------------------------------------------
-// Photos.
+// Photos and grades.
 // ---------------------------------------------------------------------
 
-// Paint img into rect, cover-fit (fill, crop the overflow), honouring
-// the user's zoom (1 = plain cover-fit) and pan (fractions of the rect,
+// Cover-fit img into rect (fill it, crop the overflow), honouring the
+// user's zoom (1 = plain cover-fit) and pan (fractions of the rect,
 // -0.5..0.5). The caller clips to the rect first.
 export function drawPhotoIn(ctx, img, rect, zoom, ox, oy) {
   const iw = img.naturalWidth || img.width;
@@ -147,9 +147,9 @@ export function drawPhotoIn(ctx, img, rect, zoom, ox, oy) {
   ctx.drawImage(img, dx, dy, dw, dh);
 }
 
-// The CSS filter a grade puts on the photo itself (the tinted overlays
-// in gradePanel do the rest).
-function gradeFilter(grade) {
+// The CSS filter a grade lays on the photo itself; the tinted washes
+// in washPanel do the rest of the colour work.
+function filterForGrade(grade) {
   switch (grade) {
     case 'neon': return 'saturate(1.5) contrast(1.07) brightness(1.02)';
     case 'dusk': return 'saturate(0.9) contrast(1.05)';
@@ -158,8 +158,8 @@ function gradeFilter(grade) {
   }
 }
 
-// Tinted light laid over one panel, clipped by the caller to the panel.
-function gradePanel(ctx, rect, grade, strength) {
+// Tinted light over one panel; the caller clips to the panel first.
+function washPanel(ctx, rect, grade, strength) {
   const { x, y, w, h } = rect;
   if (grade === 'sunset') {
     const wash = ctx.createLinearGradient(x, y, x, y + h);
@@ -198,15 +198,15 @@ function gradePanel(ctx, rect, grade, strength) {
     ctx.fillStyle = wash;
     ctx.fillRect(x, y, w, h);
   }
-  // Mono needs no overlay: the filter already took the colour out.
+  // Mono takes no wash: its filter already drained the colour.
 }
 
 // ---------------------------------------------------------------------
-// The sunset backdrop behind the tilted-stack layout: sky, sun with a
-// banded retro cut, a blocky skyline and two palms — all shapes.
+// The painted backdrop behind the tilted stack: graded sky, a sun
+// with the banded retro cut, a blocky skyline, two palm silhouettes.
 // ---------------------------------------------------------------------
 
-function drawBackdrop(ctx, W, H, grade) {
+function paintBackdrop(ctx, W, H, grade) {
   const sky = ctx.createLinearGradient(0, 0, 0, H);
   if (grade === 'neon') {
     sky.addColorStop(0, '#150826');
@@ -227,7 +227,7 @@ function drawBackdrop(ctx, W, H, grade) {
   ctx.fillStyle = sky;
   ctx.fillRect(0, 0, W, H);
 
-  // Sun with horizontal slits near its base — the retro poster cut.
+  // Sun, slit-cut near its base in the sky's own colour.
   const sunX = W * 0.7;
   const sunY = H * 0.3;
   const sunR = W * 0.105;
@@ -261,11 +261,11 @@ function drawBackdrop(ctx, W, H, grade) {
     ctx.fillRect(bx, horizon - bh, bw, bh + H * 0.02);
     bx += bw + W * 0.014;
   }
-  drawPalmSilhouette(ctx, W * 0.09, H * 0.81, H * 0.21, -0.22);
-  drawPalmSilhouette(ctx, W * 0.93, H * 0.83, H * 0.17, 0.18);
+  paintPalm(ctx, W * 0.09, H * 0.81, H * 0.21, -0.22);
+  paintPalm(ctx, W * 0.93, H * 0.83, H * 0.17, 0.18);
 }
 
-function drawPalmSilhouette(ctx, x, y, s, lean) {
+function paintPalm(ctx, x, y, s, lean) {
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate(lean);
@@ -294,47 +294,48 @@ function drawPalmSilhouette(ctx, x, y, s, lean) {
 }
 
 // ---------------------------------------------------------------------
-// POP-OUT — the signature. The star photo is painted again over the
-// finished grid, enlarged past its panel's edges. A photo with real
-// transparency (a cut-out) bursts out as itself, ringed by a white
-// keyline grown from its own silhouette; an ordinary photo bursts out
-// in an oval portal of its panel, blown up past the frame.
+// POP-OUT, the signature. The star is painted again over the finished
+// grid, standing taller than its panel. A photo with real
+// transparency bursts out as itself, ringed by a white keyline grown
+// from its own alpha silhouette; an ordinary photo bursts out inside
+// a white-rimmed oval portal blown up past the frame.
 // ---------------------------------------------------------------------
 
-const silhouetteCache = new WeakMap();
+const outlineCache = new WeakMap();
 
-// A white silhouette of a cut-out image, painted once at natural size
-// and reused at any draw size: draw the image, keep only its alpha.
-function silhouetteOf(img) {
-  let sil = silhouetteCache.get(img);
-  if (sil) return sil;
+// A white cut-out of the image at natural size, built once and reused
+// at any draw size: paint the image, then keep only its alpha.
+function outlineOf(img) {
+  let outline = outlineCache.get(img);
+  if (outline) return outline;
   const w = img.naturalWidth || img.width;
   const h = img.naturalHeight || img.height;
-  sil = document.createElement('canvas');
-  sil.width = w;
-  sil.height = h;
-  const sc = sil.getContext('2d');
-  sc.drawImage(img, 0, 0);
-  sc.globalCompositeOperation = 'source-in';
-  sc.fillStyle = '#ffffff';
-  sc.fillRect(0, 0, w, h);
-  silhouetteCache.set(img, sil);
-  return sil;
+  outline = document.createElement('canvas');
+  outline.width = w;
+  outline.height = h;
+  const oc = outline.getContext('2d');
+  oc.drawImage(img, 0, 0);
+  oc.globalCompositeOperation = 'source-in';
+  oc.fillStyle = '#ffffff';
+  oc.fillRect(0, 0, w, h);
+  outlineCache.set(img, outline);
+  return outline;
 }
 
-// burst is 0..1: how far past the frame the subject reaches.
-// panel is the hero rect the subject belongs to. Drawn after every
-// panel, before the title band, so the star overlaps its neighbours
-// but never the lettering.
+// burst runs 0..1 — how far past the frame the subject reaches. The
+// star's feet stay on the panel's bottom edge and its height is
+// capped, so the burst spills over the panel but never off the
+// poster. Painted after every panel, before the title band.
 export function drawPopOut(ctx, photo, panel, burst, W, H) {
   if (!photo || !photo.img) return;
   const img = photo.img;
   const iw = img.naturalWidth || img.width;
   const ih = img.naturalHeight || img.height;
   if (!iw || !ih) return;
-  const reach = 0.18 + 0.5 * (burst == null ? 0.6 : burst); // panel heights past the top edge
+  const reach = 0.18 + 0.5 * (burst == null ? 0.6 : burst);
   const cx = panel.x + panel.w / 2 + (photo.ox || 0) * panel.w * 0.4;
-  const bottom = panel.y + panel.h; // feet stay on the panel's bottom edge
+  const floor = panel.y + panel.h;
+  const heightCap = floor - H * 0.012;
 
   ctx.save();
   ctx.shadowColor = 'rgba(16,2,26,0.5)';
@@ -342,25 +343,17 @@ export function drawPopOut(ctx, photo, panel, burst, W, H) {
   ctx.shadowOffsetY = Math.max(4, H * 0.008);
 
   if (photo.cutout) {
-    // The subject itself, scaled so it stands `reach` taller than the
-    // panel, ringed by its own silhouette grown a few percent. The
-    // height is capped so the head stays on the poster: the burst
-    // spills over the panel, never off the cover.
-    const h = Math.min(panel.h * (1 + reach) * (photo.zoom || 1), bottom - H * 0.012);
+    const h = Math.min(panel.h * (1 + reach) * (photo.zoom || 1), heightCap);
     const w = (h * iw) / ih;
-    const x = cx - w / 2;
-    const y = bottom - h;
-    const sil = silhouetteOf(img);
     const grow = 1.045;
-    ctx.drawImage(sil, cx - (w * grow) / 2, bottom - h * grow, w * grow, h * grow);
+    ctx.drawImage(outlineOf(img), cx - (w * grow) / 2, floor - h * grow, w * grow, h * grow);
     ctx.shadowColor = 'transparent';
-    ctx.drawImage(img, x, y, w, h);
+    ctx.drawImage(img, cx - w / 2, floor - h, w, h);
   } else {
-    // Oval portal: the panel's photo, cover-fit into a tall ellipse
-    // that swallows the panel's top edge and leans over the gutter.
-    const h = Math.min(panel.h * (1 + reach * 0.8) * (photo.zoom || 1), bottom - H * 0.012);
+    const h = Math.min(panel.h * (1 + reach * 0.8) * (photo.zoom || 1), heightCap);
     const w = Math.min(panel.w * 0.94, h * 0.78);
-    const cy = bottom - h / 2;
+    const cy = floor - h / 2;
+    const rim = Math.max(4, W * 0.006);
     ctx.beginPath();
     ctx.ellipse(cx, cy, w / 2, h / 2, 0, 0, Math.PI * 2);
     ctx.fillStyle = '#ffffff';
@@ -368,7 +361,7 @@ export function drawPopOut(ctx, photo, panel, burst, W, H) {
     ctx.shadowColor = 'transparent';
     ctx.save();
     ctx.beginPath();
-    ctx.ellipse(cx, cy, w / 2 - Math.max(4, W * 0.006), h / 2 - Math.max(4, W * 0.006), 0, 0, Math.PI * 2);
+    ctx.ellipse(cx, cy, w / 2 - rim, h / 2 - rim, 0, 0, Math.PI * 2);
     ctx.clip();
     drawPhotoIn(ctx, img, { x: cx - w / 2, y: cy - h / 2, w, h }, 1, photo.ox, photo.oy);
     ctx.restore();
@@ -377,25 +370,27 @@ export function drawPopOut(ctx, photo, panel, burst, W, H) {
 }
 
 // ---------------------------------------------------------------------
-// Lettering. Three title faces over the band: sunset gradient, neon
-// tube, and the retro chrome headline.
+// Lettering: three headline treatments over the band — retro chrome,
+// sunset gradient, neon tube — plus a tilted script tagline. All set
+// in system stacks; the metal, glow and warmth are paint, not fonts.
 // ---------------------------------------------------------------------
 
-function fitTitleSize(ctx, text, maxWidth, startSize) {
+// Largest headline size whose squeezed width fits maxWidth.
+function fitHeadline(ctx, text, maxWidth, startSize) {
   let size = startSize;
-  ctx.font = `${size}px ${TITLE_FONT}`;
-  while (size > 12 && ctx.measureText(text).width > maxWidth) {
+  ctx.font = headlineFont(size);
+  while (size > 12 && ctx.measureText(text).width * HEADLINE_SQUEEZE > maxWidth) {
     size -= 2;
-    ctx.font = `${size}px ${TITLE_FONT}`;
+    ctx.font = headlineFont(size);
   }
   return size;
 }
 
-// The chrome gradient: a hard horizon a little above the middle —
-// sky blue above, a white mirror line, then steel and a magenta
-// reflection at the foot, like lettering on an arcade cabinet.
-function chromeGradient(ctx, top, height) {
-  const g = ctx.createLinearGradient(0, top, 0, top + height);
+// The chrome: a hard horizon a little above the middle — deep navy
+// and sky above, a white mirror line, then steel falling to a
+// magenta reflection at the foot, like lettering on a game cabinet.
+function metalGradient(ctx, height) {
+  const g = ctx.createLinearGradient(0, -height * 0.8, 0, height * 0.14);
   g.addColorStop(0.0, '#0a1c46');
   g.addColorStop(0.3, '#2f6bc4');
   g.addColorStop(0.46, '#bfe3ff');
@@ -407,21 +402,19 @@ function chromeGradient(ctx, top, height) {
   return g;
 }
 
-function paintTitle(ctx, title, x, baseline, size, state, W) {
+function paintHeadline(ctx, title, x, baseline, size, state, W) {
   const style = state.titleStyle || 'chrome';
-  ctx.font = `${size}px ${TITLE_FONT}`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
   ctx.lineJoin = 'round';
-  const top = baseline - size * 0.8;
 
   if (style === 'chrome') {
-    // Slight forward lean, then the two offset shadows, then the
-    // bevelled metal face.
+    // Squeezed and leaning a breath forward; magenta and cyan offset
+    // shadows first, then the bevelled metal face and a top sheen.
     ctx.save();
     ctx.translate(x, baseline);
-    ctx.transform(1, 0, -0.055, 1, 0, 0);
-    ctx.font = `${size}px ${TITLE_FONT}`;
+    ctx.transform(HEADLINE_SQUEEZE, 0, -0.055, 1, 0, 0);
+    ctx.font = headlineFont(size);
     ctx.fillStyle = '#ff2e88';
     ctx.fillText(title, size * 0.05, size * 0.055);
     ctx.fillStyle = '#17c3e6';
@@ -429,9 +422,8 @@ function paintTitle(ctx, title, x, baseline, size, state, W) {
     ctx.strokeStyle = '#070d2b';
     ctx.lineWidth = Math.max(2, size * 0.085);
     ctx.strokeText(title, 0, 0);
-    ctx.fillStyle = chromeGradient(ctx, top - baseline, size * 0.92);
+    ctx.fillStyle = metalGradient(ctx, size);
     ctx.fillText(title, 0, 0);
-    // A white sheen across the top third of the letters.
     ctx.save();
     ctx.beginPath();
     ctx.rect(-size * 0.1, -size * 0.84, W, size * 0.3);
@@ -445,20 +437,27 @@ function paintTitle(ctx, title, x, baseline, size, state, W) {
 
   if (style === 'neon') {
     ctx.save();
+    ctx.translate(x, baseline);
+    ctx.transform(HEADLINE_SQUEEZE, 0, 0, 1, 0, 0);
+    ctx.font = headlineFont(size);
     ctx.shadowColor = '#ff2fd6';
     ctx.shadowBlur = size * 0.32;
     ctx.strokeStyle = '#ff5df2';
     ctx.lineWidth = Math.max(2, size * 0.045);
-    ctx.strokeText(title, x, baseline);
+    ctx.strokeText(title, 0, 0);
     ctx.shadowColor = '#19d3ff';
     ctx.fillStyle = '#eafcff';
-    ctx.fillText(title, x, baseline);
+    ctx.fillText(title, 0, 0);
     ctx.restore();
     return;
   }
 
-  // Sunset: warm horizontal gradient, heavy black outline.
-  const grad = ctx.createLinearGradient(x, 0, x + Math.max(1, ctx.measureText(title).width), 0);
+  // Sunset: a warm gradient running along the word, heavy dark edge.
+  ctx.save();
+  ctx.translate(x, baseline);
+  ctx.transform(HEADLINE_SQUEEZE, 0, 0, 1, 0, 0);
+  ctx.font = headlineFont(size);
+  const grad = ctx.createLinearGradient(0, 0, Math.max(1, ctx.measureText(title).width), 0);
   if (state.grade === 'mono') {
     grad.addColorStop(0, '#ffffff');
     grad.addColorStop(1, '#cfcfcf');
@@ -469,20 +468,21 @@ function paintTitle(ctx, title, x, baseline, size, state, W) {
   }
   ctx.strokeStyle = '#12060f';
   ctx.lineWidth = Math.max(2, size * 0.075);
-  ctx.strokeText(title, x, baseline);
+  ctx.strokeText(title, 0, 0);
   ctx.fillStyle = grad;
-  ctx.fillText(title, x, baseline);
+  ctx.fillText(title, 0, 0);
+  ctx.restore();
 }
 
-function drawTitleBand(ctx, W, H, state) {
-  const bandH = H * TITLE_BAND;
+function paintTitleBand(ctx, W, H, state) {
+  const bandH = H * BAND_SHARE;
   const bandY = H - bandH;
+  const style = state.titleStyle || 'chrome';
   ctx.fillStyle = state.grade === 'mono' ? '#101010' : '#1d0b27';
   ctx.fillRect(0, bandY, W, bandH);
 
-  // The band's top rule matches the lettering: chrome bar, neon tube
-  // or the warm three-stop rule.
-  const style = state.titleStyle || 'chrome';
+  // The band's top rule dresses like the lettering: a chrome bar, a
+  // neon tube, or the warm three-stop rule.
   if (style === 'chrome') {
     const bar = ctx.createLinearGradient(0, bandY, 0, bandY + Math.max(4, H * 0.009));
     bar.addColorStop(0, '#bfe3ff');
@@ -513,41 +513,44 @@ function drawTitleBand(ctx, W, H, state) {
   const availW = W - pad * 2;
   if (title) {
     const start = bandH * (sub ? 0.54 : 0.7) * (state.titleSize || 1);
-    const size = fitTitleSize(ctx, title, availW, start);
-    paintTitle(ctx, title, pad, bandY + bandH * (sub ? 0.6 : 0.74), size, state, W);
+    const size = fitHeadline(ctx, title, availW, start);
+    paintHeadline(ctx, title, pad, bandY + bandH * (sub ? 0.6 : 0.74), size, state, W);
   }
   if (sub) {
+    // The tagline: a script stack, tilted a breath, glowing softly —
+    // a hand-written tag under the headline.
     let size = bandH * 0.175;
-    ctx.font = `${size}px ${SCRIPT_FONT}`;
+    ctx.font = `italic 700 ${size}px ${TAGLINE_STACK}`;
     while (size > 9 && ctx.measureText(sub).width > availW) {
       size -= 1;
-      ctx.font = `${size}px ${SCRIPT_FONT}`;
+      ctx.font = `italic 700 ${size}px ${TAGLINE_STACK}`;
     }
-    ctx.textAlign = 'left';
     ctx.save();
+    ctx.translate(pad, bandY + bandH * 0.815);
+    ctx.rotate(-0.022);
     ctx.fillStyle = style === 'neon' ? '#ff5df2' : '#ffd9ec';
     ctx.shadowColor = style === 'neon' ? '#ff2fd6' : 'rgba(0,0,0,0.65)';
     ctx.shadowBlur = size * 0.35;
-    ctx.fillText(sub, pad, bandY + bandH * 0.815);
+    ctx.fillText(sub, 0, 0);
     ctx.restore();
   }
 }
 
 // ---------------------------------------------------------------------
-// Finishes: poster frame, vignette, deterministic film grain.
+// Finishes: the poster frame, a vignette, and seeded film grain —
+// the same noise on every run, so an export is byte-for-byte the
+// picture the preview showed.
 // ---------------------------------------------------------------------
 
-// A seeded grain tile: the same noise on every run, so an export is
-// byte-for-byte the picture the preview showed.
-let grainPattern = null;
-function getGrainPattern(ctx) {
-  if (grainPattern) return grainPattern;
+let grainTile = null;
+function grainPattern(ctx) {
+  if (grainTile) return grainTile;
   const tile = document.createElement('canvas');
   tile.width = 140;
   tile.height = 140;
   const tc = tile.getContext('2d');
   const img = tc.createImageData(140, 140);
-  let seed = 20261119;
+  let seed = 20261120;
   for (let i = 0; i < img.data.length; i += 4) {
     seed = (seed * 1103515245 + 12345) % 2147483648;
     const v = seed % 256;
@@ -557,11 +560,11 @@ function getGrainPattern(ctx) {
     img.data[i + 3] = 20;
   }
   tc.putImageData(img, 0, 0);
-  grainPattern = ctx.createPattern(tile, 'repeat');
-  return grainPattern;
+  grainTile = ctx.createPattern(tile, 'repeat');
+  return grainTile;
 }
 
-function drawFinishes(ctx, W, H, state) {
+function paintFinishes(ctx, W, H, state) {
   if (state.frame !== false) {
     const fw = Math.max(8, Math.round(Math.min(W, H) * 0.022));
     ctx.strokeStyle = '#ffffff';
@@ -582,7 +585,7 @@ function drawFinishes(ctx, W, H, state) {
     ctx.fillRect(0, 0, W, H);
   }
   if (state.grain !== false) {
-    const pat = getGrainPattern(ctx);
+    const pat = grainPattern(ctx);
     if (pat) {
       ctx.save();
       ctx.globalAlpha = 0.5;
@@ -604,25 +607,21 @@ export function drawCover(ctx, W, H, state) {
   const layout = state.layout || 'popout';
 
   if (layout === 'tilt') {
-    drawBackdrop(ctx, W, H, grade);
+    paintBackdrop(ctx, W, H, grade);
   } else {
     ctx.fillStyle = '#fdfbf7';
     ctx.fillRect(0, 0, W, H);
   }
 
   const panels = layoutPanels(layout, W, H);
-  const filter = gradeFilter(grade);
+  const filter = filterForGrade(grade);
   panels.forEach((rect, i) => {
     const slot = (state.panelPhoto && state.panelPhoto[i]) ?? i % 4;
     const photo = state.photos && state.photos[slot];
     ctx.save();
-    if (rect.rot) {
-      ctx.translate(rect.x + rect.w / 2, rect.y + rect.h / 2);
-      ctx.rotate(rect.rot);
-      ctx.translate(-rect.w / 2, -rect.h / 2);
-    } else {
-      ctx.translate(rect.x, rect.y);
-    }
+    ctx.translate(rect.x + rect.w / 2, rect.y + rect.h / 2);
+    if (rect.rot) ctx.rotate(rect.rot);
+    ctx.translate(-rect.w / 2, -rect.h / 2);
     const local = { x: 0, y: 0, w: rect.w, h: rect.h };
     ctx.beginPath();
     ctx.rect(0, 0, rect.w, rect.h);
@@ -638,38 +637,37 @@ export function drawCover(ctx, W, H, state) {
       ctx.fillStyle = ph;
       ctx.fillRect(0, 0, rect.w, rect.h);
       ctx.fillStyle = 'rgba(255,255,255,0.88)';
-      ctx.font = `bold ${Math.max(14, rect.w * 0.05)}px system-ui, sans-serif`;
+      ctx.font = `700 ${Math.max(14, rect.w * 0.05)}px system-ui, sans-serif`;
       ctx.textAlign = 'center';
       ctx.fillText('ADD A PHOTO', rect.w / 2, rect.h / 2);
     }
-    gradePanel(ctx, local, grade, strength);
+    washPanel(ctx, local, grade, strength);
     ctx.restore();
 
-    // Borders: a fat white photo edge on the tilted stack, a hairline
-    // keyline on the flat layouts.
-    ctx.save();
-    ctx.translate(rect.x + rect.w / 2, rect.y + rect.h / 2);
-    ctx.rotate(rect.rot || 0);
-    if (layout === 'tilt') {
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = Math.max(4, W * 0.008);
-    } else if (layout !== 'full') {
-      ctx.strokeStyle = 'rgba(255,255,255,0.9)';
-      ctx.lineWidth = Math.max(2, W * 0.002);
-    }
+    // Edges: a fat white photo border on the tilted stack, a hairline
+    // keyline on the flat layouts, nothing on full bleed.
     if (layout === 'tilt' || layout !== 'full') {
+      ctx.save();
+      ctx.translate(rect.x + rect.w / 2, rect.y + rect.h / 2);
+      ctx.rotate(rect.rot || 0);
+      if (layout === 'tilt') {
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = Math.max(4, W * 0.008);
+      } else {
+        ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+        ctx.lineWidth = Math.max(2, W * 0.002);
+      }
       ctx.strokeRect(-rect.w / 2, -rect.h / 2, rect.w, rect.h);
+      ctx.restore();
     }
-    ctx.restore();
   });
 
-  // The signature: in Pop-Out the hero panel's star breaks the frame.
+  // The signature moment: the hero panel's star breaks its frame.
   if (layout === 'popout') {
     const starSlot = state.starSlot == null ? 3 : state.starSlot;
-    const star = state.photos && state.photos[starSlot];
-    drawPopOut(ctx, star, panels[0], state.burst, W, H);
+    drawPopOut(ctx, state.photos && state.photos[starSlot], panels[0], state.burst, W, H);
   }
 
-  drawTitleBand(ctx, W, H, state);
-  drawFinishes(ctx, W, H, state);
+  paintTitleBand(ctx, W, H, state);
+  paintFinishes(ctx, W, H, state);
 }

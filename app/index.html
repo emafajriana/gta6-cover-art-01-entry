@@ -11,13 +11,13 @@
   <section class="controls" aria-label="Cover controls">
     <header>
       <h1>Sunset Cover Studio</h1>
-      <p class="tagline">Your photo + a caption = multi-panel cover art. Offline — photos never leave this machine.</p>
+      <p class="tagline">Your photo + a caption = multi-panel cover art in the style of a GTA poster. Offline — photos never leave this machine.</p>
       <p class="signature">★ Signature: <strong>POP-OUT mode</strong> — your star breaks out of the panel frame, under a retro-chrome headline.</p>
     </header>
 
     <section class="group" aria-label="Photos">
       <h2>1 · Photos</h2>
-      <p class="hint">Drop photos onto a slot, or pick a file. Click a panel on the cover to edit it. A photo with a transparent background (a cut-out) becomes the pop-out star as itself; any other photo bursts out in an oval portal.</p>
+      <p class="hint">Drop photos onto a slot, or pick a file. Click a panel on the cover to edit it. A photo with a transparent background (a cut-out) becomes the pop-out star as itself; any other photo bursts out inside an oval portal.</p>
       <div class="slots" id="slots"></div>
       <div class="samples">
         <span>No photo handy? Try a sample:</span>
@@ -34,7 +34,7 @@
       <div id="popoutControls">
         <label class="row">Pop-out star <select id="starPhoto"></select></label>
         <label class="row">Burst <input id="burst" type="range" min="0" max="1" step="0.05" value="0.6"></label>
-        <p class="hint">Burst = how far the star spills past the frame. Load a cut-out (transparent PNG) as the star and the person bursts out; a plain photo bursts out in an oval portal.</p>
+        <p class="hint">Burst = how far the star spills past the frame. Load a cut-out (a transparent PNG) as the star and the person bursts out; a plain photo bursts out in an oval portal.</p>
       </div>
       <label class="row">Panel <span id="panelLabel">1</span> uses photo
         <select id="panelPhoto"></select>
@@ -71,7 +71,7 @@
     </section>
 
     <footer>
-      <p>All artwork here is original: the lettering is Bebas Neue + Pacifico (SIL Open Font License, see app/fonts/). No Rockstar Games logo, artwork or fonts are used. Everything runs offline from these files.</p>
+      <p>Everything here is original and drawn in code: the lettering is set in system font stacks — no font files, and no Rockstar Games logo, artwork or fonts anywhere. The studio runs offline from these files alone.</p>
     </footer>
   </section>
 

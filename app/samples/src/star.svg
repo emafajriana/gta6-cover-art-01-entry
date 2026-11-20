@@ -1,55 +1,77 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1250" width="1000" height="1250">
   <defs>
-    <linearGradient id="jacket" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#f0563f"/>
-      <stop offset="1" stop-color="#c22e28"/>
+    <linearGradient id="blazer" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e83e8c"/>
+      <stop offset="1" stop-color="#a41358"/>
     </linearGradient>
-    <linearGradient id="lens" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#4a63b8"/>
-      <stop offset=".55" stop-color="#1b2350"/>
-      <stop offset="1" stop-color="#0d0d12"/>
+    <linearGradient id="shades" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffd76e"/>
+      <stop offset=".55" stop-color="#c2571b"/>
+      <stop offset="1" stop-color="#571f3d"/>
     </linearGradient>
   </defs>
 
-  <!-- neck -->
-  <rect x="460" y="420" width="80" height="130" fill="#9a5a2e"/>
+  <!-- raised left arm, waving: forearm and open hand -->
+  <path d="M282 640 Q196 560 168 448 L238 420 Q268 520 330 588 Z" fill="#8a4f24"/>
+  <g fill="#a05f2c">
+    <path d="M150 452 Q128 380 142 318 L168 322 Q162 386 176 440 Z"/>
+    <path d="M176 446 Q168 368 188 306 L214 314 Q200 382 204 444 Z"/>
+    <path d="M204 444 Q202 372 226 318 L250 330 Q232 388 232 446 Z"/>
+    <path d="M140 330 Q110 300 122 268 Q158 282 164 322 Z"/>
+  </g>
+  <path d="M282 640 Q196 560 168 448 L238 420 Q268 520 330 588 Z" fill="#000000" opacity=".12"/>
 
-  <!-- raised right arm: sleeve, forearm, thumbs-up -->
-  <path d="M688 586 Q792 596 850 666 L798 738 Q744 690 686 692 Z" fill="#c22e28"/>
-  <path d="M794 700 Q804 592 828 494 L886 504 Q870 600 874 708 Z" fill="#b26a35"/>
-  <rect x="822" y="404" width="68" height="96" rx="25" fill="#b26a35"/>
-  <rect x="872" y="420" width="31" height="56" rx="15" transform="rotate(16 887 448)" fill="#b26a35"/>
-  <path d="M830 448 Q856 438 884 448" stroke="#8a4f24" stroke-width="6" fill="none"/>
-  <path d="M830 474 Q856 464 884 474" stroke="#8a4f24" stroke-width="6" fill="none"/>
+  <!-- right arm bent, hand resting at the waist -->
+  <path d="M706 622 Q792 640 812 724 L742 748 Q724 690 682 668 Z" fill="url(#blazer)"/>
+  <path d="M742 724 Q788 706 820 730 Q806 772 762 778 Q736 760 742 724 Z" fill="#a05f2c"/>
 
-  <!-- torso: open jacket over a cream tee -->
-  <path d="M214 1250 L224 762 Q230 642 302 596 L420 546 L500 560 L580 546 L668 580 Q716 606 726 690 L718 900 L728 1250 Z" fill="url(#jacket)"/>
-  <path d="M438 550 L562 550 L598 1250 L402 1250 Z" fill="#f4efe6"/>
-  <path d="M438 550 L502 706 L450 838 L418 596 Z" fill="#8e1f1a"/>
-  <path d="M562 550 L498 706 L550 838 L582 596 Z" fill="#8e1f1a"/>
-  <path d="M580 546 L668 580 Q716 606 726 690 L718 900 L728 1250 L640 1250 L620 700 Q606 600 580 546 Z" fill="#000000" opacity=".10"/>
-  <!-- gold chain -->
-  <path d="M428 566 Q500 652 572 566" stroke="#ffd76e" stroke-width="10" fill="none"/>
-  <circle cx="500" cy="636" r="15" fill="#ffd76e"/>
-  <circle cx="500" cy="636" r="7" fill="#c2922e"/>
-  <!-- left hand at the hem -->
-  <path d="M234 1250 L238 1122 Q240 1080 264 1082 Q288 1084 286 1126 L284 1250 Z" fill="#b26a35"/>
-  <!-- rim light: cyan on the left edge, magenta on the raised arm -->
-  <path d="M226 770 Q216 1010 226 1244" stroke="#19d3ff" stroke-width="9" fill="none" opacity=".75"/>
-  <path d="M874 700 Q870 596 886 508" stroke="#ff2e88" stroke-width="9" fill="none" opacity=".75"/>
+  <!-- torso: magenta blazer over a white top, gold belt -->
+  <path d="M250 1250 L262 806 Q266 668 348 612 L448 566 L552 566 L660 606 Q726 640 736 742 L742 1250 Z" fill="url(#blazer)"/>
+  <path d="M446 566 L554 566 L586 1250 L414 1250 Z" fill="#f7f2e9"/>
+  <path d="M446 566 L506 730 L458 872 L420 606 Z" fill="#7e0d43"/>
+  <path d="M554 566 L494 730 L542 872 L580 606 Z" fill="#7e0d43"/>
+  <path d="M660 606 Q726 640 736 742 L742 1250 L668 1250 L648 742 Q640 650 660 606 Z" fill="#000000" opacity=".10"/>
+  <rect x="404" y="1120" width="192" height="26" fill="#3a2312"/>
+  <rect x="472" y="1112" width="56" height="42" rx="8" fill="#ffd76e"/>
+  <!-- pendant -->
+  <path d="M452 584 Q500 664 548 584" stroke="#ffd76e" stroke-width="9" fill="none"/>
+  <circle cx="500" cy="650" r="13" fill="#ffd76e"/>
+  <circle cx="500" cy="650" r="6" fill="#c2922e"/>
+  <!-- rim light: cyan down the waving side, warm gold down the other -->
+  <path d="M272 820 Q264 1040 270 1240" stroke="#19d3ff" stroke-width="9" fill="none" opacity=".7"/>
+  <path d="M730 760 Q736 1000 734 1240" stroke="#ffb347" stroke-width="9" fill="none" opacity=".7"/>
 
-  <!-- head -->
-  <ellipse cx="384" cy="332" rx="17" ry="26" fill="#b26a35"/>
-  <ellipse cx="616" cy="332" rx="17" ry="26" fill="#b26a35"/>
-  <ellipse cx="500" cy="308" rx="118" ry="142" fill="#b26a35"/>
-  <path d="M424 386 Q500 486 576 386 L572 428 Q500 502 428 428 Z" fill="#3a2312" opacity=".22"/>
-  <!-- hair, swept fringe -->
-  <path d="M380 306 Q368 138 500 134 Q632 138 620 306 Q606 214 542 196 Q562 240 518 214 Q468 188 446 228 Q418 202 412 254 Q398 284 380 306 Z" fill="#1d130c"/>
-  <!-- sunglasses -->
-  <rect x="394" y="276" width="212" height="68" rx="30" fill="#0d0d12"/>
-  <rect x="406" y="285" width="86" height="50" rx="21" fill="url(#lens)"/>
-  <rect x="508" y="285" width="86" height="50" rx="21" fill="url(#lens)"/>
-  <rect x="490" y="296" width="20" height="11" rx="5" fill="#ffd76e"/>
-  <path d="M500 348 L491 388 Q500 397 511 388" stroke="#8a4f24" stroke-width="6" fill="none" stroke-linecap="round"/>
-  <path d="M460 418 Q500 446 540 418" stroke="#5f3418" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <!-- neck and head -->
+  <rect x="462" y="428" width="76" height="140" fill="#8a4f24"/>
+  <ellipse cx="500" cy="330" rx="112" ry="138" fill="#a05f2c"/>
+  <path d="M432 402 Q500 492 568 402 L562 446 Q500 512 438 446 Z" fill="#5f3418" opacity=".25"/>
+
+  <!-- voluminous curly hair, a cloud of ringlets -->
+  <g fill="#170d08">
+    <circle cx="500" cy="176" r="98"/>
+    <circle cx="402" cy="216" r="72"/><circle cx="598" cy="216" r="72"/>
+    <circle cx="368" cy="300" r="62"/><circle cx="632" cy="300" r="62"/>
+    <circle cx="382" cy="386" r="48"/><circle cx="618" cy="386" r="48"/>
+    <circle cx="448" cy="128" r="62"/><circle cx="556" cy="124" r="58"/>
+    <circle cx="500" cy="238" r="86"/>
+  </g>
+  <g fill="none" stroke="#3a2312" stroke-width="7" opacity=".8">
+    <path d="M452 118 Q420 150 428 190"/>
+    <path d="M548 108 Q584 140 574 184"/>
+    <path d="M392 250 Q362 282 372 322"/>
+    <path d="M612 252 Q640 286 628 326"/>
+  </g>
+
+  <!-- hoop earrings -->
+  <circle cx="382" cy="420" r="24" fill="none" stroke="#ffd76e" stroke-width="9"/>
+  <circle cx="618" cy="420" r="24" fill="none" stroke="#ffd76e" stroke-width="9"/>
+
+  <!-- aviator shades with a sunset in them -->
+  <path d="M398 296 Q398 268 436 268 L484 268 Q500 268 500 284 Q500 268 516 268 L564 268 Q602 268 602 296 Q602 356 556 362 Q512 366 502 322 Q498 306 492 322 Q482 366 444 362 Q398 356 398 296 Z" fill="url(#shades)"/>
+  <path d="M398 292 L602 292" stroke="#3a2312" stroke-width="10"/>
+  <path d="M416 300 L470 300 L448 344 L420 344 Z" fill="#ffffff" opacity=".35"/>
+
+  <!-- smile -->
+  <path d="M458 428 Q500 458 542 428" stroke="#5f3418" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path d="M470 436 Q500 452 530 436 Q500 446 470 436 Z" fill="#ffffff"/>
 </svg>
