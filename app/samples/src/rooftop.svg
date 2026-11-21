@@ -10,6 +10,10 @@
       <stop offset="0" stop-color="#46255c"/>
       <stop offset="1" stop-color="#12081f"/>
     </linearGradient>
+    <linearGradient id="tankShade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#1d0d33"/>
+      <stop offset="1" stop-color="#0d0518"/>
+    </linearGradient>
   </defs>
 
   <rect width="1000" height="1250" fill="url(#dusky)"/>
@@ -20,13 +24,16 @@
     <circle cx="612" cy="170" r="2"/><circle cx="905" cy="130" r="2.8"/><circle cx="720" cy="64" r="2.2"/>
     <circle cx="150" cy="262" r="1.9"/><circle cx="540" cy="238" r="1.7"/><circle cx="958" cy="268" r="2"/>
     <circle cx="352" cy="300" r="1.6"/><circle cx="60" cy="380" r="1.7"/><circle cx="840" cy="330" r="1.8"/>
+    <circle cx="480" cy="330" r="1.5"/><circle cx="880" cy="430" r="1.6"/><circle cx="120" cy="470" r="1.5"/>
   </g>
 
-  <!-- rising moon -->
+  <!-- rising moon with craters and a halo -->
   <circle cx="238" cy="330" r="86" fill="#ffedb5"/>
   <circle cx="238" cy="330" r="130" fill="#ffedb5" opacity=".16"/>
   <circle cx="206" cy="306" r="13" fill="#e8d194" opacity=".7"/>
   <circle cx="268" cy="356" r="9" fill="#e8d194" opacity=".7"/>
+  <circle cx="238" cy="368" r="6" fill="#e8d194" opacity=".6"/>
+  <circle cx="216" cy="344" r="5" fill="#e8d194" opacity=".6"/>
 
   <!-- far towers -->
   <g fill="#241239">
@@ -39,6 +46,9 @@
     <rect x="888" y="646" width="118" height="294"/>
     <rect x="792" y="522" width="18" height="48"/>
   </g>
+  <circle cx="801" cy="514" r="7" fill="#ff3b30">
+    <animate attributeName="opacity" values="1;.15;1" dur="2.4s" repeatCount="indefinite"/>
+  </circle>
   <g fill="#ffd76e" opacity=".9">
     <rect x="24" y="676" width="11" height="13"/><rect x="56" y="722" width="11" height="13"/>
     <rect x="168" y="622" width="11" height="13"/><rect x="196" y="676" width="11" height="13"/>
@@ -47,6 +57,8 @@
     <rect x="648" y="690" width="11" height="13"/><rect x="676" y="742" width="11" height="13"/>
     <rect x="772" y="606" width="11" height="13"/><rect x="806" y="662" width="11" height="13"/>
     <rect x="772" y="726" width="11" height="13"/><rect x="922" y="686" width="11" height="13"/>
+    <rect x="286" y="752" width="11" height="13"/><rect x="648" y="800" width="11" height="13"/>
+    <rect x="24" y="790" width="11" height="13"/><rect x="922" y="760" width="11" height="13"/>
   </g>
   <g fill="#7df9ff" opacity=".8">
     <rect x="286" y="646" width="11" height="13"/><rect x="648" y="646" width="11" height="13"/>
@@ -58,20 +70,36 @@
   <rect x="0" y="928" width="1000" height="14" fill="#12081f"/>
 
   <!-- water tower on a neighbouring roof, silhouetted -->
-  <g fill="#170b28">
+  <g fill="url(#tankShade)">
     <rect x="700" y="742" width="150" height="66" rx="10"/>
     <path d="M692 742 L775 692 L858 742 Z"/>
     <rect x="716" y="808" width="12" height="112"/>
     <rect x="822" y="808" width="12" height="112"/>
     <rect x="706" y="852" width="138" height="10"/>
+    <rect x="706" y="884" width="138" height="8"/>
   </g>
 
-  <!-- bulkhead hut with a warm door and a cool window -->
+  <!-- bulkhead hut with a warm door, a cool window, steam from its vent -->
   <g>
     <rect x="96" y="806" width="196" height="150" fill="#2a1544"/>
     <rect x="126" y="836" width="62" height="120" fill="#ffd76e"/>
     <rect x="126" y="836" width="62" height="120" fill="none" stroke="#12081f" stroke-width="6"/>
+    <circle cx="176" cy="900" r="5" fill="#12081f"/>
     <rect x="210" y="830" width="52" height="52" fill="#7df9ff" opacity=".75"/>
+    <path d="M210 856 L262 856 M236 830 L236 882" stroke="#12081f" stroke-width="5"/>
+    <rect x="238" y="782" width="16" height="26" fill="#2a1544"/>
+    <path d="M246 776 q-14 -22 2 -36 q14 -13 4 -30" stroke="#ffffff" stroke-width="7" fill="none" opacity=".35" stroke-linecap="round"/>
+    <path d="M262 780 q-10 -16 2 -27 q11 -10 3 -23" stroke="#ffffff" stroke-width="5" fill="none" opacity=".25" stroke-linecap="round"/>
+  </g>
+
+  <!-- AC unit and vent pipes on the deck -->
+  <g>
+    <rect x="420" y="1050" width="120" height="76" rx="8" fill="#1c0d30"/>
+    <circle cx="480" cy="1088" r="26" fill="none" stroke="#3c2542" stroke-width="7"/>
+    <path d="M480 1068 L480 1108 M460 1088 L500 1088 M466 1074 L494 1102 M494 1074 L466 1102" stroke="#3c2542" stroke-width="5"/>
+    <path d="M880 1000 L880 1080 M880 1000 q0 -22 24 -22 l10 0" stroke="#1c0d30" stroke-width="16" fill="none"/>
+    <path d="M330 1010 L330 1086" stroke="#1c0d30" stroke-width="14"/>
+    <ellipse cx="330" cy="1006" rx="16" ry="7" fill="#1c0d30"/>
   </g>
 
   <!-- railing -->
@@ -83,14 +111,18 @@
     <path d="M950 953 L950 1048" fill="none"/>
   </g>
 
-  <!-- string lights sagging over the deck -->
+  <!-- string lights sagging over the deck, with droppers and glows -->
   <path d="M40 830 Q300 940 560 872 Q800 818 972 884" stroke="#12081f" stroke-width="5" fill="none"/>
+  <g stroke="#12081f" stroke-width="4">
+    <path d="M150 862 L150 874"/><path d="M290 888 L290 900"/><path d="M430 886 L430 898"/>
+    <path d="M566 862 L566 874"/><path d="M700 838 L700 850"/><path d="M836 836 L836 848"/>
+  </g>
   <g>
-    <circle cx="150" cy="872" r="11" fill="#ffb347"/><circle cx="290" cy="898" r="11" fill="#ff5e8a"/>
-    <circle cx="430" cy="896" r="11" fill="#7df9ff"/><circle cx="566" cy="872" r="11" fill="#ffd76e"/>
-    <circle cx="700" cy="848" r="11" fill="#ff5e8a"/><circle cx="836" cy="846" r="11" fill="#ffb347"/>
-    <circle cx="150" cy="872" r="22" fill="#ffb347" opacity=".25"/><circle cx="430" cy="896" r="22" fill="#7df9ff" opacity=".25"/>
-    <circle cx="836" cy="846" r="22" fill="#ffb347" opacity=".25"/>
+    <circle cx="150" cy="886" r="11" fill="#ffb347"/><circle cx="290" cy="912" r="11" fill="#ff5e8a"/>
+    <circle cx="430" cy="910" r="11" fill="#7df9ff"/><circle cx="566" cy="886" r="11" fill="#ffd76e"/>
+    <circle cx="700" cy="862" r="11" fill="#ff5e8a"/><circle cx="836" cy="860" r="11" fill="#ffb347"/>
+    <circle cx="150" cy="886" r="24" fill="#ffb347" opacity=".25"/><circle cx="430" cy="910" r="24" fill="#7df9ff" opacity=".25"/>
+    <circle cx="836" cy="860" r="24" fill="#ffb347" opacity=".25"/><circle cx="290" cy="912" r="24" fill="#ff5e8a" opacity=".2"/>
   </g>
 
   <!-- deck chairs and a cooler: somebody is up here enjoying the view -->
@@ -98,6 +130,10 @@
     <path d="M392 1120 L470 1052 L486 1064 L428 1130 L500 1136 L498 1154 L392 1146 Z"/>
     <path d="M560 1148 L636 1082 L652 1094 L596 1156 L664 1160 L662 1178 L560 1172 Z"/>
   </g>
+  <g stroke="#ff5e8a" stroke-width="5" opacity=".65">
+    <path d="M404 1118 L472 1058"/><path d="M572 1146 L638 1088"/>
+  </g>
   <rect x="716" y="1108" width="86" height="54" rx="8" fill="#c22e5e"/>
   <rect x="716" y="1108" width="86" height="14" rx="7" fill="#f4efe6"/>
+  <rect x="748" y="1096" width="22" height="14" rx="4" fill="#f4efe6"/>
 </svg>

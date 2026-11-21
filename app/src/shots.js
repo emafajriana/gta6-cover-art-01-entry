@@ -62,8 +62,8 @@ export async function runShot(shot, query, api) {
   if (shot === 'cover') document.body.classList.add('shot-cover');
   if (setStatus) setStatus('');
 
-  // No font files to wait for — the lettering is system stacks — so
-  // paint, let two frames settle, and declare the scene ready.
+  // The lettering is vector paths — nothing loads before the paint —
+  // so paint, let two frames settle, and declare the scene ready.
   redraw();
   await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
   redraw();

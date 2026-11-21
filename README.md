@@ -4,21 +4,30 @@
 
 # Sunset Cover Studio — GTA-style cover art from any photo
 
-**★ Signature: POP-OUT mode under a retro-chrome headline.** Give the
-star slot a cut-out portrait (a photo with a transparent background)
-and the studio's headline layout does what flat cover makers can't:
-your star **breaks out of the panel frame** — standing taller than
-the hero panel, feet planted on its bottom edge, head and shoulders
-bursting over the top border and across the gutters, ringed by a
-white keyline grown from the silhouette itself. Above her, the title
-is set in **retro chrome**: a liquid-metal gradient with a hard
-mirror horizon, bevelled edges and magenta/cyan offset shadows,
-painted on canvas in a heavy condensed system font stack — the
-eighties arcade-marquee look, with **no font files at all**. Any
-ordinary photo can star too: it bursts out inside a white-rimmed
-oval portal. A Burst slider decides how far the star escapes.
+**★ Signature: hand-drawn vector lettering — every glyph is code.**
+This studio's headlines are not set in a font. Its poster alphabet
+was authored by hand as polygon data (`app/src/glyphs.js`): 44
+chunky glyphs — A–Z, 0–9 and punctuation — each one a set of outlines
+on a 90-unit cap grid, counters and all. At draw time the outlines
+become canvas paths and are filled like metal: a liquid-chrome
+gradient with a hard mirror horizon, bevelled strokes and
+magenta/cyan offset shadows, or molten sunset, or neon. The tagline
+uses the same glyphs leaned into a script hand with a swoosh
+underline. There are **no font files anywhere in this entry** — the
+lettering *is* source code, so it renders identically on every
+machine, offline, forever.
 
-Under that headline act sits a complete cover maker: your photos and
+That lettering crowns the studio's other signature, **POP-OUT
+mode**: give the star slot a cut-out portrait (a photo with a
+transparent background) and your star **breaks out of the panel
+frame** — standing taller than the hero panel, feet planted on its
+bottom edge, head and shoulders bursting over the top border and
+across the gutters, ringed by a white keyline grown from the
+silhouette itself. Any ordinary photo can star too: it bursts out
+inside a white-rimmed oval portal. A Burst slider decides how far
+the star escapes.
+
+Under the headline act sits a complete cover maker: your photos and
 a caption become multi-panel cover art in the style of GTA 6's
 posters, exported as PNG at 1080×1080, 1080×1350 or 1920×1080. It
 runs offline in a desktop browser from its own static files — photos
@@ -36,9 +45,9 @@ never leave the machine.
    how far she bursts out of her frame.
 4. **Crop each panel** — click a panel on the cover, then drag to
    pan, scroll to zoom, or use the zoom / pan sliders.
-5. **Write the caption** — a big squeezed headline and a tilted
-   script tagline, in your choice of Chrome, Sunset or Neon
-   lettering.
+5. **Write the caption** — a big headline in the hand-drawn vector
+   alphabet and a script-leaned tagline from the same glyphs, in
+   your choice of Chrome, Sunset or Neon paint.
 6. **Grade it** — Sunset, Neon Nights, Dusk or Mono, with a strength
    slider, seeded film grain (identical on every export), a vignette
    and a white poster frame.
@@ -60,16 +69,33 @@ every file the app loads lives under `app/`.
 
 ## What's original here
 
-- The lettering is drawn in code from **system font stacks** — a
-  heavy condensed stack for the headlines, a script stack for the
-  tagline. The app ships **no font files**, and no Rockstar Games
-  logo, artwork or fonts are used anywhere.
+- The lettering is an alphabet drawn as data: 44 glyph outlines
+  stored as polygon coordinates in `app/src/glyphs.js` and painted
+  on canvas by `app/src/cover.js`. No font files, no font loading,
+  and no Rockstar Games logo, artwork or fonts anywhere.
 - The four samples are original flat illustrations drawn as code
   (`app/samples/src/*.svg`, rendered to PNG) — a boulevard at
-  sunset, a rooftop at dusk, a neon club front, and the
+  sunset with a teal convertible, a rooftop at dusk under string
+  lights, a neon club front with a queue outside, and the
   transparent-background star. No real person's photo, no game art.
 - The sunset backdrop, slit-cut sun, palms, skyline, chrome
   lettering, grain and vignette are all drawn in code on canvas.
+
+## The lettering, up close
+
+Each glyph lives on a grid 90 units tall. An outline is a list of
+`[x, y]` points; a letter with a counter (A, B, D, O, P, Q, R, 0, 4,
+6, 8, 9) carries a second, inner outline that the canvas fills with
+the even-odd rule, punching the hole. Letters advance by their own
+measured widths, so a headline is fitted to its band by arithmetic,
+not by eye: the studio adds up the glyph widths, scales the whole
+line to the band, and centres it. Because the shapes are plain data,
+the same alphabet takes any paint the canvas can make — this entry
+ships three (liquid chrome, molten sunset, neon) — and the tagline
+is the same outlines again, sheared into a lean and underlined with
+a tapering swoosh. If a caption uses a character outside the 44,
+the alphabet politely falls back to a blank space rather than
+reaching for a system font.
 
 ## Entry
 

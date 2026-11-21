@@ -9,34 +9,64 @@
       <stop offset="0" stop-color="#2c1454"/>
       <stop offset="1" stop-color="#03040c"/>
     </linearGradient>
+    <radialGradient id="lampGlow" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#ffd76e" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#ffd76e" stop-opacity="0"/>
+    </radialGradient>
   </defs>
 
   <rect width="1000" height="1250" fill="url(#nightsky)"/>
+
+  <!-- stars and a crescent over the club -->
+  <g fill="#ffffff">
+    <circle cx="70" cy="70" r="2.4"/><circle cx="220" cy="44" r="1.8"/><circle cx="420" cy="90" r="2.2"/>
+    <circle cx="640" cy="52" r="1.7"/><circle cx="820" cy="96" r="2.3"/><circle cx="950" cy="40" r="1.8"/>
+    <circle cx="540" cy="130" r="1.5"/><circle cx="140" cy="130" r="1.5"/>
+  </g>
+  <path d="M902 60 a34 34 0 1 0 22 52 a27 27 0 1 1 -22 -52 Z" fill="#ffedb5"/>
 
   <!-- the club block -->
   <rect x="96" y="150" width="808" height="618" fill="#170830"/>
   <rect x="96" y="150" width="808" height="26" fill="#19e3ff"/>
   <!-- zigzag neon frieze -->
   <path d="M96 262 L176 190 L256 262 L336 190 L416 262 L496 190 L576 262 L656 190 L736 262 L816 190 L904 262 L904 296 L96 296 Z" fill="#ff2fd6"/>
+  <path d="M96 262 L176 190 L256 262 L336 190 L416 262 L496 190 L576 262 L656 190 L736 262 L816 190 L904 262" fill="none" stroke="#ffd7f4" stroke-width="4"/>
 
-  <!-- vertical blade sign down the left edge -->
+  <!-- vertical blade sign: the word CLUB as neon tube letters -->
   <g>
     <rect x="28" y="330" width="104" height="330" rx="18" fill="#0b0620" stroke="#19e3ff" stroke-width="6"/>
-    <text x="80" y="408" font-family="Georgia, serif" font-size="56" fill="#7df9ff" text-anchor="middle">C</text>
-    <text x="80" y="478" font-family="Georgia, serif" font-size="56" fill="#7df9ff" text-anchor="middle">L</text>
-    <text x="80" y="548" font-family="Georgia, serif" font-size="56" fill="#7df9ff" text-anchor="middle">U</text>
-    <text x="80" y="618" font-family="Georgia, serif" font-size="56" fill="#7df9ff" text-anchor="middle">B</text>
+    <g fill="none" stroke="#7df9ff" stroke-width="9" stroke-linecap="round">
+      <path d="M96 380 a22 24 0 1 0 0 34"/>
+      <path d="M66 452 L66 496 L94 496"/>
+      <path d="M64 532 L64 574 a16 16 0 0 0 32 0 L96 532"/>
+      <path d="M66 640 L66 606 L84 606 a13 12 0 0 1 0 24 L66 630 a13 12 0 0 1 18 -12 a13 12 0 0 1 0 24 L66 640" transform="translate(0 -28)"/>
+    </g>
   </g>
 
-  <!-- marquee -->
+  <!-- marquee: a neon palm and a star over a field of bulbs -->
   <rect x="176" y="330" width="688" height="128" rx="16" fill="#ffd76e"/>
   <rect x="176" y="330" width="688" height="128" rx="16" fill="none" stroke="#b3123f" stroke-width="6"/>
-  <text x="520" y="418" font-family="Georgia, serif" font-style="italic" font-size="66" fill="#b3123f" text-anchor="middle">Starlight Club</text>
+  <g transform="translate(520 394)">
+    <g stroke="#b3123f" stroke-width="7" fill="none" stroke-linecap="round">
+      <path d="M-8 44 Q-12 6 -26 -22"/>
+      <path d="M-26 -22 q-30 -18 -52 -8"/>
+      <path d="M-26 -22 q-14 -28 -36 -34"/>
+      <path d="M-26 -22 q4 -30 -8 -46"/>
+      <path d="M-26 -22 q22 -24 44 -20"/>
+      <path d="M-26 -22 q30 -8 44 8"/>
+    </g>
+    <path d="M120 -34 l7 16 17 2 -12 12 3 17 -15 -8 -15 8 3 -17 -12 -12 17 -2 Z" fill="#b3123f"/>
+    <path d="M-168 -10 l5 12 13 2 -9 9 2 13 -12 -6 -11 6 2 -13 -9 -9 13 -2 Z" fill="#b3123f"/>
+    <path d="M60 34 q40 14 84 2" stroke="#b3123f" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path d="M-150 30 q30 12 62 4" stroke="#b3123f" stroke-width="6" fill="none" stroke-linecap="round"/>
+  </g>
   <g fill="#fff3b0">
     <circle cx="212" cy="366" r="8"/><circle cx="212" cy="422" r="8"/>
     <circle cx="828" cy="366" r="8"/><circle cx="828" cy="422" r="8"/>
     <circle cx="330" cy="366" r="8"/><circle cx="710" cy="366" r="8"/>
     <circle cx="330" cy="422" r="8"/><circle cx="710" cy="422" r="8"/>
+    <circle cx="452" cy="366" r="8"/><circle cx="588" cy="366" r="8"/>
+    <circle cx="452" cy="422" r="8"/><circle cx="588" cy="422" r="8"/>
   </g>
 
   <!-- tall glowing windows with dancers inside -->
@@ -49,12 +79,21 @@
       <rect x="410" y="506" width="180" height="226" rx="12"/>
       <rect x="624" y="506" width="180" height="226" rx="12"/>
     </g>
+    <path d="M196 619 L376 619 M410 619 L590 619 M624 619 L804 619" stroke="#0d2c40" stroke-width="5" opacity=".5"/>
     <g fill="#0d2c40" opacity=".85">
       <path d="M238 732 L262 592 L292 660 L306 592 L330 732 Z"/>
       <path d="M452 732 L486 606 L512 676 L534 606 L560 732 Z"/>
       <path d="M664 732 L690 600 L716 668 L738 600 L766 732 Z"/>
+      <circle cx="278" cy="578" r="13"/>
+      <circle cx="502" cy="592" r="13"/>
+      <circle cx="712" cy="586" r="13"/>
     </g>
   </g>
+
+  <!-- streetlamp washing the queue in warm light -->
+  <circle cx="500" cy="800" r="120" fill="url(#lampGlow)"/>
+  <path d="M500 768 L500 830" stroke="#0a0616" stroke-width="9"/>
+  <circle cx="500" cy="762" r="13" fill="#fff3b0"/>
 
   <!-- wet street with the colours smeared down it -->
   <rect y="768" width="1000" height="482" fill="url(#pavement)"/>
@@ -62,6 +101,13 @@
     <rect x="196" y="792" width="180" height="230" fill="#19e3ff"/>
     <rect x="410" y="792" width="180" height="230" fill="#ff2fd6"/>
     <rect x="624" y="792" width="180" height="230" fill="#ffd76e"/>
+  </g>
+  <g opacity=".3">
+    <rect x="216" y="830" width="140" height="10" fill="#ffffff"/>
+    <rect x="440" y="900" width="120" height="9" fill="#ffffff"/>
+    <rect x="650" y="850" width="130" height="10" fill="#ffffff"/>
+    <rect x="300" y="1120" width="150" height="11" fill="#ffffff"/>
+    <rect x="600" y="1160" width="140" height="10" fill="#ffffff"/>
   </g>
   <g stroke="#ffffff" stroke-width="4" opacity=".2">
     <line x1="0" y1="884" x2="1000" y2="884"/>
@@ -83,5 +129,9 @@
   <g fill="#ff2fd6" opacity=".35">
     <path d="M196 1250 L204 1130 Q208 1086 252 1084 L252 1250 Z"/>
     <path d="M526 1250 L534 1136 Q538 1092 586 1090 L586 1250 Z"/>
+  </g>
+  <g fill="#ffd76e" opacity=".3">
+    <path d="M368 1250 L376 1120 Q380 1072 420 1070 L420 1250 Z"/>
+    <path d="M708 1250 L716 1128 Q720 1080 762 1078 L762 1250 Z"/>
   </g>
 </svg>

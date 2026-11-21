@@ -1,7 +1,10 @@
 /* Sunset Cover Studio — editor chrome. The poster itself is painted
-   on canvas by src/cover.js; this sheet styles the control rail and
-   the stage around it. Lettering here uses the same heavy condensed
-   system stack as the poster's headlines: no font files anywhere. */
+   on canvas by src/cover.js, and its lettering is the hand-drawn
+   vector alphabet of src/glyphs.js; this sheet only styles the
+   control rail and the stage around the poster. No font files are
+   loaded for the page either: the rail speaks in the platform's own
+   UI faces, and the studio's nameplate wears the same liquid-chrome
+   gradient the vector letters wear on the poster. */
 
 * { box-sizing: border-box; }
 html, body {
@@ -38,6 +41,7 @@ html, body {
   text-transform: uppercase; color: #ffb347;
 }
 .hint { margin: 6px 0 0; color: #9d8ba8; font-size: 12.5px; }
+.hint em { color: #cbb9d3; font-style: normal; border-bottom: 1px dotted #6e4c7b; }
 
 label { display: flex; flex-direction: column; gap: 5px; font-weight: 600; font-size: 13px; margin-top: 8px; }
 label.row { flex-direction: row; align-items: center; gap: 10px; }
@@ -70,6 +74,7 @@ button.primary:hover { filter: brightness(1.1); }
 .seg button { padding: 7px 10px; font-size: 13px; font-weight: 600; }
 .seg button[aria-pressed="true"] { background: #ff5e8a; }
 #layouts button[aria-pressed="true"] { background: linear-gradient(90deg, #ff2e88, #17c3e6); }
+#titleStyles button[aria-pressed="true"] { background: linear-gradient(90deg, #2f6bc4, #c94b9e); }
 
 .slots { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .slot {

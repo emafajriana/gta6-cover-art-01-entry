@@ -1,5 +1,5 @@
 // cover.js — every pixel of a Sunset Cover Studio poster is painted
-// here. paintCover(ctx, W, H, state) draws one finished cover: a grid
+// here. drawCover(ctx, W, H, state) paints one finished cover: a grid
 // of photo panels under a colour grade, a lettered title band along
 // the foot, and print finishes (poster frame, vignette, film grain).
 // The editor's live preview and the PNG exporter both call this one
@@ -10,14 +10,17 @@
 // the subject breaks the frame — feet on the panel's bottom edge,
 // head and shoulders spilling over the top border and across the
 // gutter, ringed by a white keyline grown from the subject's own
-// silhouette. Head it with the retro-chrome title (a hard-horizon
-// metal gradient, bevel stroke, magenta/cyan offset shadows) and the
-// poster reads like an eighties arcade marquee.
+// silhouette.
 //
-// Lettering ships NO font files. Headlines are set in a heavy
-// condensed system stack and squeezed a touch further on the canvas;
-// the chrome is gradient and shadow work, not a typeface. Everything
-// on the poster is drawn in code from the user's own photos.
+// The lettering is HAND-DRAWN VECTOR LETTERING (glyphs.js): every
+// glyph of the poster alphabet is polygon data drawn for this app,
+// and headlines are filled paths — retro chrome with a hard mirror
+// horizon, bevel stroke and magenta/cyan offset shadows — never a
+// typeface. There are no font files anywhere in the studio, and no
+// canvas fillText on the poster: even the tagline is the same vector
+// alphabet, leaned into a script hand with a swoosh underline.
+
+import { buildTextPath, vectorTextWidth, CAP_UNITS } from './glyphs.js';
 
 export const SIZES = {
   square: { w: 1080, h: 1080, label: '1080 x 1080', name: 'Square post' },
@@ -43,23 +46,10 @@ export const LAYOUTS = {
 };
 
 export const TITLE_STYLES = {
-  chrome: { name: 'Retro Chrome', hint: 'metallic 80s headline with offset shadows' },
-  sunset: { name: 'Sunset', hint: 'warm gradient fill, black outline' },
-  neon: { name: 'Neon Glow', hint: 'bright tube lettering on dark plum' },
+  chrome: { name: 'Vector Chrome', hint: 'hand-drawn vector letters in liquid chrome' },
+  sunset: { name: 'Vector Sunset', hint: 'hand-drawn vector letters in a warm gradient' },
+  neon: { name: 'Vector Neon', hint: 'hand-drawn vector letters as neon tube' },
 };
-
-// Heavy condensed faces every desktop already owns, in falling order;
-// the canvas squeeze below narrows whichever one loads, so the
-// headline keeps its tall poster proportions on any machine.
-const HEADLINE_STACK =
-  '"Arial Narrow", "Liberation Sans Narrow", Impact, "Franklin Gothic Medium", sans-serif';
-const TAGLINE_STACK =
-  '"Segoe Script", "Bradley Hand", "Comic Sans MS", cursive';
-const HEADLINE_SQUEEZE = 0.84;
-
-function headlineFont(size) {
-  return `900 ${size}px ${HEADLINE_STACK}`;
-}
 
 // ---------------------------------------------------------------------
 // Panel geometry. layoutPanels returns rects {x, y, w, h, rot} in
@@ -203,7 +193,8 @@ function washPanel(ctx, rect, grade, strength) {
 
 // ---------------------------------------------------------------------
 // The painted backdrop behind the tilted stack: graded sky, a sun
-// with the banded retro cut, a blocky skyline, two palm silhouettes.
+// with the banded retro cut, a blocky skyline with lit windows, two
+// palm silhouettes and a pair of birds on the warm grades.
 // ---------------------------------------------------------------------
 
 function paintBackdrop(ctx, W, H, grade) {
@@ -249,20 +240,63 @@ function paintBackdrop(ctx, W, H, grade) {
   }
   ctx.restore();
 
-  // Skyline: a deterministic walk of blocks along the horizon.
+  // Birds: two small double-arcs crossing the warm sky.
+  if (grade === 'sunset' || grade === 'dusk') {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(30,8,36,0.55)';
+    ctx.lineWidth = Math.max(2, W * 0.0022);
+    ctx.lineCap = 'round';
+    for (const [bx, by, bs] of [[0.22, 0.16, 1], [0.3, 0.21, 0.7], [0.16, 0.24, 0.55]]) {
+      const x = W * bx;
+      const y = H * by;
+      const s = W * 0.016 * bs;
+      ctx.beginPath();
+      ctx.moveTo(x - s, y);
+      ctx.quadraticCurveTo(x - s * 0.4, y - s * 0.7, x, y);
+      ctx.quadraticCurveTo(x + s * 0.4, y - s * 0.7, x + s, y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  // Skyline: a deterministic walk of blocks along the horizon, with
+  // a scatter of lit windows on the night grades.
   ctx.fillStyle = 'rgba(22,9,34,0.6)';
   const horizon = H * 0.79;
   let bx = -W * 0.02;
   let step = 13;
+  const blocks = [];
   while (bx < W) {
     step = (step * 37 + 11) % 89;
     const bw = W * (0.045 + (step % 9) / 150);
     const bh = H * (0.07 + (step % 21) / 120);
     ctx.fillRect(bx, horizon - bh, bw, bh + H * 0.02);
+    blocks.push([bx, horizon - bh, bw, bh]);
     bx += bw + W * 0.014;
+  }
+  if (grade === 'neon' || grade === 'dusk') {
+    ctx.fillStyle = 'rgba(255,214,120,0.85)';
+    let seed = 7;
+    for (const [x0, y0, bw, bh] of blocks) {
+      const cols = Math.max(1, Math.floor(bw / (W * 0.016)));
+      const rows = Math.max(1, Math.floor(bh / (H * 0.03)));
+      for (let c = 0; c < cols; c++) {
+        for (let r = 0; r < rows; r++) {
+          seed = (seed * 1103515245 + 12345) % 2147483648;
+          if (seed % 3 === 0) {
+            ctx.fillRect(
+              x0 + W * 0.006 + c * W * 0.016,
+              y0 + H * 0.01 + r * H * 0.03,
+              W * 0.007, H * 0.012,
+            );
+          }
+        }
+      }
+    }
   }
   paintPalm(ctx, W * 0.09, H * 0.81, H * 0.21, -0.22);
   paintPalm(ctx, W * 0.93, H * 0.83, H * 0.17, 0.18);
+  paintPalm(ctx, W * 0.5, H * 0.82, H * 0.12, 0.1);
 }
 
 function paintPalm(ctx, x, y, s, lean) {
@@ -370,27 +404,38 @@ export function drawPopOut(ctx, photo, panel, burst, W, H) {
 }
 
 // ---------------------------------------------------------------------
-// Lettering: three headline treatments over the band — retro chrome,
-// sunset gradient, neon tube — plus a tilted script tagline. All set
-// in system stacks; the metal, glow and warmth are paint, not fonts.
+// Lettering: the headline and tagline are the hand-drawn vector
+// alphabet of glyphs.js, painted as paths. Three headline treatments
+// over the band — chrome, sunset, neon — plus the tagline in the same
+// glyphs leaned into a script hand, with a swoosh underline.
 // ---------------------------------------------------------------------
 
-// Largest headline size whose squeezed width fits maxWidth.
-function fitHeadline(ctx, text, maxWidth, startSize) {
+// Largest headline size (cap height in poster pixels) whose vector
+// width fits maxWidth. Widths come from the glyph data itself, so
+// the fit is exact on every machine — no font metrics involved.
+function fitHeadline(text, maxWidth, startSize) {
   let size = startSize;
-  ctx.font = headlineFont(size);
-  while (size > 12 && ctx.measureText(text).width * HEADLINE_SQUEEZE > maxWidth) {
-    size -= 2;
-    ctx.font = headlineFont(size);
-  }
+  const units = vectorTextWidth(text);
+  while (size > 12 && (units * size) / CAP_UNITS > maxWidth) size -= 2;
   return size;
+}
+
+// Aim the context at a line of glyph space: the line's left edge
+// lands on x, its baseline on baseline, its cap height becomes size
+// poster pixels, leaning by shear (a breath of forward italic).
+function aimLetters(ctx, x, baseline, size, shear) {
+  ctx.translate(x, baseline);
+  ctx.transform(1, 0, shear || 0, 1, 0, 0);
+  ctx.scale(size / CAP_UNITS, size / CAP_UNITS);
+  ctx.translate(0, -CAP_UNITS);
 }
 
 // The chrome: a hard horizon a little above the middle — deep navy
 // and sky above, a white mirror line, then steel falling to a
 // magenta reflection at the foot, like lettering on a game cabinet.
-function metalGradient(ctx, height) {
-  const g = ctx.createLinearGradient(0, -height * 0.8, 0, height * 0.14);
+// Written in glyph units (0 at the cap top, 90 at the baseline).
+function metalGradient(ctx) {
+  const g = ctx.createLinearGradient(0, 0, 0, CAP_UNITS);
   g.addColorStop(0.0, '#0a1c46');
   g.addColorStop(0.3, '#2f6bc4');
   g.addColorStop(0.46, '#bfe3ff');
@@ -402,62 +447,62 @@ function metalGradient(ctx, height) {
   return g;
 }
 
-function paintHeadline(ctx, title, x, baseline, size, state, W) {
+function paintHeadline(ctx, title, x, baseline, size, state) {
   const style = state.titleStyle || 'chrome';
-  ctx.textAlign = 'left';
-  ctx.textBaseline = 'alphabetic';
+  const { path, width } = buildTextPath(title);
+  ctx.save();
   ctx.lineJoin = 'round';
 
   if (style === 'chrome') {
-    // Squeezed and leaning a breath forward; magenta and cyan offset
-    // shadows first, then the bevelled metal face and a top sheen.
+    aimLetters(ctx, x, baseline, size, -0.06);
+    // Magenta and cyan offset shadows first — printed misregistration
+    // around the metal, the eighties marquee tell.
     ctx.save();
-    ctx.translate(x, baseline);
-    ctx.transform(HEADLINE_SQUEEZE, 0, -0.055, 1, 0, 0);
-    ctx.font = headlineFont(size);
+    ctx.translate(4.5, 5);
     ctx.fillStyle = '#ff2e88';
-    ctx.fillText(title, size * 0.05, size * 0.055);
-    ctx.fillStyle = '#17c3e6';
-    ctx.fillText(title, -size * 0.04, -size * 0.04);
-    ctx.strokeStyle = '#070d2b';
-    ctx.lineWidth = Math.max(2, size * 0.085);
-    ctx.strokeText(title, 0, 0);
-    ctx.fillStyle = metalGradient(ctx, size);
-    ctx.fillText(title, 0, 0);
+    ctx.fill(path, 'evenodd');
+    ctx.restore();
     ctx.save();
-    ctx.beginPath();
-    ctx.rect(-size * 0.1, -size * 0.84, W, size * 0.3);
-    ctx.clip();
+    ctx.translate(-3.5, -3.5);
+    ctx.fillStyle = '#17c3e6';
+    ctx.fill(path, 'evenodd');
+    ctx.restore();
+    // The bevelled edge, then the liquid-metal face, then a sheen
+    // clipped to the letters' top quarter.
+    ctx.strokeStyle = '#070d2b';
+    ctx.lineWidth = 9;
+    ctx.stroke(path);
+    ctx.fillStyle = metalGradient(ctx);
+    ctx.fill(path, 'evenodd');
+    ctx.save();
+    ctx.clip(path, 'evenodd');
     ctx.fillStyle = 'rgba(255,255,255,0.28)';
-    ctx.fillText(title, 0, 0);
+    ctx.fillRect(-10, 0, width + 20, 26);
     ctx.restore();
     ctx.restore();
     return;
   }
 
   if (style === 'neon') {
-    ctx.save();
-    ctx.translate(x, baseline);
-    ctx.transform(HEADLINE_SQUEEZE, 0, 0, 1, 0, 0);
-    ctx.font = headlineFont(size);
+    aimLetters(ctx, x, baseline, size, -0.03);
+    // A glowing tube: a wide magenta halo stroke, then the bright
+    // core filled near-white with a cyan bloom.
     ctx.shadowColor = '#ff2fd6';
-    ctx.shadowBlur = size * 0.32;
+    ctx.shadowBlur = size * 0.3;
     ctx.strokeStyle = '#ff5df2';
-    ctx.lineWidth = Math.max(2, size * 0.045);
-    ctx.strokeText(title, 0, 0);
+    ctx.lineWidth = 4.5;
+    ctx.stroke(path);
     ctx.shadowColor = '#19d3ff';
+    ctx.shadowBlur = size * 0.16;
     ctx.fillStyle = '#eafcff';
-    ctx.fillText(title, 0, 0);
+    ctx.fill(path, 'evenodd');
     ctx.restore();
     return;
   }
 
   // Sunset: a warm gradient running along the word, heavy dark edge.
-  ctx.save();
-  ctx.translate(x, baseline);
-  ctx.transform(HEADLINE_SQUEEZE, 0, 0, 1, 0, 0);
-  ctx.font = headlineFont(size);
-  const grad = ctx.createLinearGradient(0, 0, Math.max(1, ctx.measureText(title).width), 0);
+  aimLetters(ctx, x, baseline, size, -0.03);
+  const grad = ctx.createLinearGradient(0, 0, Math.max(1, width), 0);
   if (state.grade === 'mono') {
     grad.addColorStop(0, '#ffffff');
     grad.addColorStop(1, '#cfcfcf');
@@ -467,10 +512,46 @@ function paintHeadline(ctx, title, x, baseline, size, state, W) {
     grad.addColorStop(1, '#ff5e8a');
   }
   ctx.strokeStyle = '#12060f';
-  ctx.lineWidth = Math.max(2, size * 0.075);
-  ctx.strokeText(title, 0, 0);
+  ctx.lineWidth = 7.5;
+  ctx.stroke(path);
   ctx.fillStyle = grad;
-  ctx.fillText(title, 0, 0);
+  ctx.fill(path, 'evenodd');
+  ctx.restore();
+}
+
+// The tagline: the same vector glyphs at small-cap height, leaned
+// hard into a script hand, over a hand-drawn swoosh. A handwritten
+// whisper under the headline's shout.
+function paintTagline(ctx, sub, x, baseline, capPx, style, maxWidth) {
+  const text = sub.toUpperCase();
+  let size = capPx;
+  const units = vectorTextWidth(text);
+  while (size > 8 && (units * size) / CAP_UNITS > maxWidth) size -= 1;
+  const { path } = buildTextPath(text);
+  ctx.save();
+  ctx.translate(x, baseline);
+  ctx.rotate(-0.022);
+  ctx.transform(1, 0, -0.14, 1, 0, 0);
+  ctx.scale(size / CAP_UNITS, size / CAP_UNITS);
+  ctx.translate(0, -CAP_UNITS);
+  ctx.fillStyle = style === 'neon' ? '#ff5df2' : '#ffd9ec';
+  ctx.shadowColor = style === 'neon' ? '#ff2fd6' : 'rgba(0,0,0,0.65)';
+  ctx.shadowBlur = capPx * 0.22;
+  ctx.fill(path, 'evenodd');
+  ctx.restore();
+
+  // The swoosh: one confident stroke sweeping out past the last
+  // letter and flicking up at the end.
+  const wPx = (units * size) / CAP_UNITS;
+  ctx.save();
+  ctx.strokeStyle = style === 'neon' ? '#ff5df2' : '#ffd9ec';
+  ctx.lineWidth = Math.max(2, capPx * 0.09);
+  ctx.lineCap = 'round';
+  ctx.globalAlpha = 0.9;
+  ctx.beginPath();
+  ctx.moveTo(x + 2, baseline + capPx * 0.34);
+  ctx.quadraticCurveTo(x + wPx * 0.45, baseline + capPx * 0.58, x + wPx + capPx * 0.42, baseline + capPx * 0.1);
+  ctx.stroke();
   ctx.restore();
 }
 
@@ -513,27 +594,26 @@ function paintTitleBand(ctx, W, H, state) {
   const availW = W - pad * 2;
   if (title) {
     const start = bandH * (sub ? 0.54 : 0.7) * (state.titleSize || 1);
-    const size = fitHeadline(ctx, title, availW, start);
-    paintHeadline(ctx, title, pad, bandY + bandH * (sub ? 0.6 : 0.74), size, state, W);
+    const size = fitHeadline(title, availW, start);
+    paintHeadline(ctx, title, pad, bandY + bandH * (sub ? 0.58 : 0.72), size, state);
   }
   if (sub) {
-    // The tagline: a script stack, tilted a breath, glowing softly —
-    // a hand-written tag under the headline.
-    let size = bandH * 0.175;
-    ctx.font = `italic 700 ${size}px ${TAGLINE_STACK}`;
-    while (size > 9 && ctx.measureText(sub).width > availW) {
-      size -= 1;
-      ctx.font = `italic 700 ${size}px ${TAGLINE_STACK}`;
-    }
-    ctx.save();
-    ctx.translate(pad, bandY + bandH * 0.815);
-    ctx.rotate(-0.022);
-    ctx.fillStyle = style === 'neon' ? '#ff5df2' : '#ffd9ec';
-    ctx.shadowColor = style === 'neon' ? '#ff2fd6' : 'rgba(0,0,0,0.65)';
-    ctx.shadowBlur = size * 0.35;
-    ctx.fillText(sub, 0, 0);
-    ctx.restore();
+    paintTagline(ctx, sub, pad, bandY + bandH * 0.83, bandH * 0.19, style, availW);
   }
+}
+
+// The empty panel's invitation, set in the vector alphabet too —
+// nothing on the poster is a typeface.
+function paintPanelLabel(ctx, w, h) {
+  const label = buildTextPath('ADD A PHOTO');
+  const size = Math.min(h * 0.1, ((w * 0.8) / label.width) * CAP_UNITS);
+  ctx.save();
+  ctx.translate((w - (label.width * size) / CAP_UNITS) / 2, h / 2 + size * 0.35);
+  ctx.scale(size / CAP_UNITS, size / CAP_UNITS);
+  ctx.translate(0, -CAP_UNITS);
+  ctx.fillStyle = 'rgba(255,255,255,0.88)';
+  ctx.fill(label.path, 'evenodd');
+  ctx.restore();
 }
 
 // ---------------------------------------------------------------------
@@ -636,10 +716,7 @@ export function drawCover(ctx, W, H, state) {
       ph.addColorStop(1, '#7b2d8b');
       ctx.fillStyle = ph;
       ctx.fillRect(0, 0, rect.w, rect.h);
-      ctx.fillStyle = 'rgba(255,255,255,0.88)';
-      ctx.font = `700 ${Math.max(14, rect.w * 0.05)}px system-ui, sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.fillText('ADD A PHOTO', rect.w / 2, rect.h / 2);
+      paintPanelLabel(ctx, rect.w, rect.h);
     }
     washPanel(ctx, local, grade, strength);
     ctx.restore();

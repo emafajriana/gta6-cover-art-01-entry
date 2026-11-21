@@ -3,7 +3,9 @@
 // control that changes it: four photo slots with drag-and-drop, the
 // layout / grade / size / lettering pickers, the pop-out controls,
 // per-panel crop (click a panel, drag to pan, scroll to zoom), and
-// the PNG export buttons.
+// the PNG export buttons. The lettering the poster wears is the
+// hand-drawn vector alphabet of glyphs.js — this file never waits on
+// a font, because the app ships none.
 import { drawCover, layoutPanels, SIZES, GRADES, LAYOUTS, TITLE_STYLES } from './cover.js';
 import { runShot } from './shots.js';
 
@@ -377,9 +379,6 @@ if (shot) {
     .then(() => loadSample(2, 'neon'))
     .then(() => loadSample(3, 'star'));
 }
-// The lettering is system stacks, so there is nothing to wait on:
-// paint at once, and repaint if the platform's font set settles.
-if (document.fonts && document.fonts.ready) {
-  document.fonts.ready.then(redraw).catch(() => {});
-}
+// The lettering is vector paths, so there is nothing to wait on:
+// paint at once.
 redraw();

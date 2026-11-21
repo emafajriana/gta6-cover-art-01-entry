@@ -3,9 +3,13 @@
 //
 // The entry itself is the static web app under app/: open
 // app/index.html in a desktop browser and it runs offline, turning a
-// photo and a caption into multi-panel GTA-poster-style cover art —
-// Pop-Out mode, retro-chrome headlines and all — and exporting it as
-// a PNG. This program's whole job is the hand-in: copy app/ and
+// photo and a caption into multi-panel GTA-poster-style cover art.
+// Its headlines are not a font: app/src/glyphs.js defines a poster
+// alphabet as polygon data — every glyph is code this session wrote —
+// and app/src/cover.js fills those outlines with liquid chrome. No
+// font files exist anywhere in the entry.
+//
+// This program's whole job is the hand-in: copy app/ and
 // screenshots/ from beside this file into the output directory, then
 // write dossier.json there with buildDossier from the kit's vendored
 // library (vendor/makefun-app.ts, kept byte-for-byte as the kit ships
