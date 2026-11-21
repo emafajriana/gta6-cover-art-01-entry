@@ -115,12 +115,17 @@ function buildSlots() {
 }
 
 async function setPhotoFromFile(i, file) {
-  const img = await loadImage(URL.createObjectURL(file));
-  setPhoto(i, img, file.name);
+  const url = URL.createObjectURL(file);
+  const img = await loadImage(url);
+  setPhoto(i, img, file.name, url);
 }
 
-function setPhoto(i, img, name) {
+function setPhoto(i, img, name, objectUrl) {
   const slot = state.photos[i];
+  // A replaced file photo hands its blob URL back to the browser;
+  // sample photos ride on plain paths and have nothing to hand back.
+  if (slot.objectUrl) URL.revokeObjectURL(slot.objectUrl);
+  slot.objectUrl = objectUrl || null;
   slot.img = img;
   slot.name = name || `photo ${SLOT_NAMES[i]}`;
   slot.zoom = 1;
@@ -319,6 +324,18 @@ canvas.addEventListener('wheel', (e) => {
   photo.zoom = Math.max(1, Math.min(3, photo.zoom * (e.deltaY < 0 ? 1.08 : 0.93)));
   redraw();
 }, { passive: false });
+
+// ---- keyboard: step through the panels --------------------------------
+
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+  const tag = (e.target.tagName || '').toLowerCase();
+  if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+  const count = layoutPanels(state.layout, canvas.width, canvas.height).length;
+  const step = e.key === 'ArrowRight' ? 1 : -1;
+  state.selectedPanel = (state.selectedPanel + step + count) % count;
+  redraw();
+});
 
 // ---- export ------------------------------------------------------------
 

@@ -49,6 +49,18 @@ export async function runShot(shot, query, api) {
     state.layout === 'popout' ? '' : 'none';
   document.getElementById('exportSize').textContent = SIZE_LABELS[state.size];
 
+  // The sliders and finish switches tell the same story too: an
+  // editor scene shows the staged numbers, not whatever the rail
+  // happened to boot with.
+  for (const [id, value] of [['titleSize', state.titleSize], ['gradeIntensity', state.gradeIntensity], ['burst', state.burst]]) {
+    const el = document.getElementById(id);
+    if (el && value != null) el.value = value;
+  }
+  for (const [id, value] of [['frame', state.frame], ['grain', state.grain], ['vignette', state.vignette]]) {
+    const el = document.getElementById(id);
+    if (el && value != null) el.checked = value;
+  }
+
   // Cast the cover: the chosen scene takes the hero slot, the other
   // two scenes fill the column, and the cut-out star takes the star
   // slot, so a Pop-Out scene always has someone to burst out.

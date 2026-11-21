@@ -25,6 +25,14 @@
   </g>
   <path d="M902 60 a34 34 0 1 0 22 52 a27 27 0 1 1 -22 -52 Z" fill="#ffedb5"/>
 
+  <!-- fine rain slanting through the neon -->
+  <g stroke="#bfe3ff" stroke-width="3" stroke-linecap="round" opacity=".16">
+    <path d="M90 210 l-12 40"/><path d="M240 120 l-12 40"/><path d="M388 300 l-12 40"/>
+    <path d="M520 90 l-12 40"/><path d="M668 240 l-12 40"/><path d="M806 150 l-12 40"/>
+    <path d="M930 330 l-12 40"/><path d="M150 480 l-12 40"/><path d="M880 560 l-12 40"/>
+    <path d="M60 700 l-12 40"/><path d="M950 760 l-12 40"/><path d="M330 60 l-12 40"/>
+  </g>
+
   <!-- the club block -->
   <rect x="96" y="150" width="808" height="618" fill="#170830"/>
   <rect x="96" y="150" width="808" height="26" fill="#19e3ff"/>
@@ -114,6 +122,7 @@
     <line x1="0" y1="1052" x2="1000" y2="1052"/>
     <line x1="0" y1="1196" x2="1000" y2="1196"/>
   </g>
+  <ellipse cx="500" cy="1010" rx="150" ry="20" fill="#ffd76e" opacity=".10"/>
 
   <!-- the queue outside, backs to us, lit from above -->
   <g fill="#0a0616">

@@ -15,7 +15,8 @@ magenta/cyan offset shadows, or molten sunset, or neon. The tagline
 uses the same glyphs leaned into a script hand with a swoosh
 underline. There are **no font files anywhere in this entry** — the
 lettering *is* source code, so it renders identically on every
-machine, offline, forever.
+machine, offline, forever. Round 4 re-cut eight of the glyphs (see
+"The lettering, up close") for a chunkier poster hand.
 
 That lettering crowns the studio's other signature, **POP-OUT
 mode**: give the star slot a cut-out portrait (a photo with a
@@ -24,8 +25,9 @@ frame** — standing taller than the hero panel, feet planted on its
 bottom edge, head and shoulders bursting over the top border and
 across the gutters, ringed by a white keyline grown from the
 silhouette itself. Any ordinary photo can star too: it bursts out
-inside a white-rimmed oval portal. A Burst slider decides how far
-the star escapes.
+inside a white-rimmed oval portal, which now wears a magenta
+pinstripe of its own. A Burst slider decides how far the star
+escapes.
 
 Under the headline act sits a complete cover maker: your photos and
 a caption become multi-panel cover art in the style of GTA 6's
@@ -44,7 +46,8 @@ never leave the machine.
 3. **Set the pop** — in Pop-Out, choose which slot is the star and
    how far she bursts out of her frame.
 4. **Crop each panel** — click a panel on the cover, then drag to
-   pan, scroll to zoom, or use the zoom / pan sliders.
+   pan, scroll to zoom, use the zoom / pan sliders, or step between
+   panels with the ← and → keys.
 5. **Write the caption** — a big headline in the hand-drawn vector
    alphabet and a script-leaned tagline from the same glyphs, in
    your choice of Chrome, Sunset or Neon paint.
@@ -65,7 +68,11 @@ node serve.ts
 ```
 
 Then open http://localhost:8080. No build step, no network requests:
-every file the app loads lives under `app/`.
+every file the app loads lives under `app/`. The server itself was
+rewritten for round 4 — an async responder with the port flag, the
+path jail and the content types as separate small functions — under
+exactly the same contract as before: same flags, same jail, same
+status lines.
 
 ## What's original here
 
@@ -78,6 +85,9 @@ every file the app loads lives under `app/`.
   sunset with a teal convertible, a rooftop at dusk under string
   lights, a neon club front with a queue outside, and the
   transparent-background star. No real person's photo, no game art.
+  Round 4 detailed them further: rain over the neon street, a
+  pigeon on the rooftop railing, the sun's streak on the boulevard
+  tarmac, and jewellery on the star.
 - The sunset backdrop, slit-cut sun, palms, skyline, chrome
   lettering, grain and vignette are all drawn in code on canvas.
 
@@ -97,11 +107,38 @@ a tapering swoosh. If a caption uses a character outside the 44,
 the alphabet politely falls back to a blank space rather than
 reaching for a system font.
 
+Round 4 re-cut eight glyphs in place: A's flat top became a pointed
+apex, M's centre vertex drops deeper, S's lower bowl rounds out,
+G's spur thickened, R's leg kicks further out, Q's tail swings
+below the baseline, 4's crossbar rose, and 7 grew a crossbar of its
+own. No glyph's advance width moved, so every fitted headline keeps
+the measure it had — only the shapes inside the measure changed.
+The chrome's mirror band widened too, and headline and tagline
+fitting now solves the size in one step of arithmetic instead of
+shrinking pixel by pixel.
+
+## Round 4 polish pass
+
+- `serve.ts` rewritten end to end (async responder, jail and port
+  parsing as separate functions) under its original contract.
+- Eight glyphs re-cut (above); chrome mirror band widened; the
+  sunset wash deepened at mid-panel; seeded stars join the night
+  grades of the tilted-stack backdrop.
+- The oval pop-out portal gained a magenta pinstripe ring.
+- The editor learned the ← / → keys for stepping between panels,
+  recycles blob URLs when a slot's photo is replaced, and its
+  staged screenshot scenes now set the sliders and finish switches
+  to match the staged state.
+- The four sample illustrations were detailed and re-rendered, and
+  the entry's screenshots were re-shot from the polished app.
+
 ## Entry
 
 `main.ts` (Node 22, standard library only) copies `app/` and
 `screenshots/` to the output directory and writes `dossier.json` via
-the vendored make.fun library. Run it with:
+the vendored make.fun library. Its flow was restructured in round 4
+(a single `main()` and a stack-walk file counter); the hand-in it
+produces is unchanged. Run it with:
 
 ```sh
 mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts

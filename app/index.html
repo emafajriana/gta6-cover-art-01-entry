@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sunset Cover Studio — GTA-style cover art maker</title>
+<meta name="description" content="Turn a photo and a caption into multi-panel GTA-style cover art with hand-drawn vector lettering. Offline, no uploads, PNG export at three sizes.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%231d0b27'/%3E%3Ccircle cx='50' cy='56' r='25' fill='%23ffb347'/%3E%3Crect y='62' width='100' height='38' fill='%2383308e'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -42,7 +44,7 @@
       <label class="row">Zoom <input id="zoom" type="range" min="1" max="3" step="0.01" value="1"></label>
       <label class="row">Pan X <input id="panX" type="range" min="-0.5" max="0.5" step="0.01" value="0"></label>
       <label class="row">Pan Y <input id="panY" type="range" min="-0.5" max="0.5" step="0.01" value="0"></label>
-      <p class="hint">Tip: drag the photo inside a panel to move it, scroll over it to zoom.</p>
+      <p class="hint">Tip: drag the photo inside a panel to move it, scroll over it to zoom, and step between panels with the ← and → keys.</p>
     </section>
 
     <section class="group" aria-label="Caption">
@@ -78,7 +80,7 @@
 
   <section class="stage" aria-label="Cover preview">
     <canvas id="cover" width="1080" height="1080" aria-label="The cover preview"></canvas>
-    <p class="stage-hint">Click a panel to select it · drag to pan · scroll to zoom</p>
+    <p class="stage-hint">Click a panel to select it · drag to pan · scroll to zoom · ← → switch panel</p>
   </section>
 </main>
 <script type="module" src="./src/main.js"></script>

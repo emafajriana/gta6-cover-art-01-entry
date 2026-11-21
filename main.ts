@@ -18,6 +18,10 @@
 //
 // Outside the grader's container, MAKEFUN_OUTPUT_DIR stands in for
 // /output:   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
+//
+// Round 4 restructured the flow below into a main() with a
+// stack-walk file counter; what it hands in — the two trees and the
+// dossier built from them under the scorer's caps — is unchanged.
 
 import { cpSync, existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -27,43 +31,56 @@ import { buildDossier } from './vendor/makefun-app.ts';
 const repoDir = fileURLToPath(new URL('.', import.meta.url));
 const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
 
-// Count the files under a copied tree, for the hand-in summary below.
-function countFiles(dir) {
+// Count the files under a copied tree, for the hand-in summary
+// below. An explicit stack does the walking (directories themselves
+// do not count), so deep trees never lean on the call stack.
+function countFiles(root) {
   let n = 0;
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    n += entry.isDirectory() ? countFiles(join(dir, entry.name)) : 1;
+  const stack = [root];
+  while (stack.length > 0) {
+    const dir = stack.pop();
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      if (entry.isDirectory()) stack.push(join(dir, entry.name));
+      else n += 1;
+    }
   }
   return n;
 }
 
-// The app goes in whole; the screenshots folder follows it (a valid
-// entry carries 3 or 4).
-mkdirSync(outDir, { recursive: true });
-cpSync(join(repoDir, 'app'), join(outDir, 'app'), { recursive: true });
-if (existsSync(join(repoDir, 'screenshots'))) {
-  cpSync(join(repoDir, 'screenshots'), join(outDir, 'screenshots'), { recursive: true });
+function main() {
+  // The app goes in whole; the screenshots folder follows it (a
+  // valid entry carries 3 or 4).
+  mkdirSync(outDir, { recursive: true });
+  cpSync(join(repoDir, 'app'), join(outDir, 'app'), { recursive: true });
+  if (existsSync(join(repoDir, 'screenshots'))) {
+    cpSync(join(repoDir, 'screenshots'), join(outDir, 'screenshots'), { recursive: true });
+  }
+
+  // The caps below are the scorer's own for this competition,
+  // handed to the dossier builder so an entry the scorer would
+  // refuse for size is refused here first, in the open: at most 4
+  // screenshots of 256 KiB each; app/ at most 993 entries and
+  // 48 MiB with no path over 1000 bytes; the dossier's source text
+  // capped at 160 KiB.
+  const dossier = buildDossier(outDir, {
+    text_max_bytes: 163840,
+    screenshots: { max: 4, max_bytes: 262144 },
+    app_max_files: 993,
+    app_max_bytes: 50331648,
+    app_path_max_bytes: 1000,
+  });
+  writeFileSync(join(outDir, 'dossier.json'), dossier);
+
+  // Say what was handed in, so a local run shows at a glance that
+  // the bundle is complete: the app, its screenshots, and the
+  // dossier.
+  const appFiles = countFiles(join(outDir, 'app'));
+  const shotDir = join(outDir, 'screenshots');
+  const shotFiles = existsSync(shotDir) ? readdirSync(shotDir).length : 0;
+  console.log(
+    `Sunset Cover Studio handed in: ${appFiles} app files, ` +
+    `${shotFiles} screenshots, dossier.json (${Buffer.byteLength(dossier)} bytes) -> ${outDir}`,
+  );
 }
 
-// The caps below are the scorer's own for this competition, handed to
-// the dossier builder so an entry the scorer would refuse for size is
-// refused here first, in the open: at most 4 screenshots of 256 KiB
-// each; app/ at most 993 entries and 48 MiB with no path over 1000
-// bytes; the dossier's source text capped at 160 KiB.
-const dossier = buildDossier(outDir, {
-  text_max_bytes: 163840,
-  screenshots: { max: 4, max_bytes: 262144 },
-  app_max_files: 993,
-  app_max_bytes: 50331648,
-  app_path_max_bytes: 1000,
-});
-writeFileSync(join(outDir, 'dossier.json'), dossier);
-
-// Say what was handed in, so a local run shows at a glance that the
-// bundle is complete: the app, its screenshots, and the dossier.
-const appFiles = countFiles(join(outDir, 'app'));
-const shotDir = join(outDir, 'screenshots');
-const shotFiles = existsSync(shotDir) ? readdirSync(shotDir).length : 0;
-console.log(
-  `Sunset Cover Studio handed in: ${appFiles} app files, ` +
-  `${shotFiles} screenshots, dossier.json (${Buffer.byteLength(dossier)} bytes) -> ${outDir}`,
-);
+main();

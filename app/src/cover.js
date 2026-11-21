@@ -154,7 +154,7 @@ function washPanel(ctx, rect, grade, strength) {
   if (grade === 'sunset') {
     const wash = ctx.createLinearGradient(x, y, x, y + h);
     wash.addColorStop(0, 'rgba(255,120,60,0)');
-    wash.addColorStop(0.6, `rgba(255,105,80,${0.20 * strength})`);
+    wash.addColorStop(0.55, `rgba(255,105,80,${0.23 * strength})`);
     wash.addColorStop(1, `rgba(230,35,125,${0.48 * strength})`);
     ctx.fillStyle = wash;
     ctx.fillRect(x, y, w, h);
@@ -239,6 +239,25 @@ function paintBackdrop(ctx, W, H, grade) {
     ctx.fillRect(sunX - sunR, sy, sunR * 2, sunR * (0.035 + i * 0.016));
   }
   ctx.restore();
+
+  // Early stars on the night grades, pricked through the upper sky
+  // by the same seeded walk the grain uses, so they never move
+  // between a preview and its export.
+  if (grade === 'neon' || grade === 'dusk') {
+    ctx.save();
+    ctx.fillStyle = '#ffffff';
+    let starSeed = 41;
+    for (let i = 0; i < 42; i++) {
+      starSeed = (starSeed * 1103515245 + 12345) % 2147483648;
+      const sx = ((starSeed % 1000) / 1000) * W;
+      starSeed = (starSeed * 1103515245 + 12345) % 2147483648;
+      const sy = ((starSeed % 450) / 1000) * H;
+      ctx.globalAlpha = 0.25 + ((starSeed >> 8) % 50) / 100;
+      const r = Math.max(1, W * 0.0016);
+      ctx.fillRect(sx, sy, r, r);
+    }
+    ctx.restore();
+  }
 
   // Birds: two small double-arcs crossing the warm sky.
   if (grade === 'sunset' || grade === 'dusk') {
@@ -392,6 +411,14 @@ export function drawPopOut(ctx, photo, panel, burst, W, H) {
     ctx.ellipse(cx, cy, w / 2, h / 2, 0, 0, Math.PI * 2);
     ctx.fillStyle = '#ffffff';
     ctx.fill();
+    // A magenta pinstripe just outside the white rim: the portal
+    // wears the poster's own accent, so it reads as designed into
+    // the cover, not pasted onto it.
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, w / 2 + rim * 0.55, h / 2 + rim * 0.55, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = '#ff2e88';
+    ctx.lineWidth = Math.max(2, rim * 0.45);
+    ctx.stroke();
     ctx.shadowColor = 'transparent';
     ctx.save();
     ctx.beginPath();
@@ -413,11 +440,14 @@ export function drawPopOut(ctx, photo, panel, burst, W, H) {
 // Largest headline size (cap height in poster pixels) whose vector
 // width fits maxWidth. Widths come from the glyph data itself, so
 // the fit is exact on every machine — no font metrics involved.
+// Round 4 fits in one step of arithmetic instead of shrinking two
+// pixels at a time: same answer, reached directly, and never a
+// size smaller than the band can actually hold.
 function fitHeadline(text, maxWidth, startSize) {
-  let size = startSize;
   const units = vectorTextWidth(text);
-  while (size > 12 && (units * size) / CAP_UNITS > maxWidth) size -= 2;
-  return size;
+  if (!units) return startSize;
+  const fit = Math.floor((maxWidth * CAP_UNITS) / units);
+  return Math.max(12, Math.min(startSize, fit));
 }
 
 // Aim the context at a line of glyph space: the line's left edge
@@ -438,9 +468,10 @@ function metalGradient(ctx) {
   const g = ctx.createLinearGradient(0, 0, 0, CAP_UNITS);
   g.addColorStop(0.0, '#0a1c46');
   g.addColorStop(0.3, '#2f6bc4');
-  g.addColorStop(0.46, '#bfe3ff');
-  g.addColorStop(0.52, '#ffffff');
-  g.addColorStop(0.57, '#7fa8dd');
+  g.addColorStop(0.44, '#bfe3ff');
+  g.addColorStop(0.5, '#ffffff');
+  g.addColorStop(0.55, '#dcefff');
+  g.addColorStop(0.6, '#7fa8dd');
   g.addColorStop(0.78, '#233f7d');
   g.addColorStop(0.92, '#4b2670');
   g.addColorStop(1.0, '#c94b9e');
@@ -524,9 +555,12 @@ function paintHeadline(ctx, title, x, baseline, size, state) {
 // whisper under the headline's shout.
 function paintTagline(ctx, sub, x, baseline, capPx, style, maxWidth) {
   const text = sub.toUpperCase();
-  let size = capPx;
   const units = vectorTextWidth(text);
-  while (size > 8 && (units * size) / CAP_UNITS > maxWidth) size -= 1;
+  // The headline's one-step fit, at tagline scale: the size whose
+  // vector width exactly meets the band, never under 8.
+  const size = units
+    ? Math.max(8, Math.min(capPx, Math.floor((maxWidth * CAP_UNITS) / units)))
+    : capPx;
   const { path } = buildTextPath(text);
   ctx.save();
   ctx.translate(x, baseline);

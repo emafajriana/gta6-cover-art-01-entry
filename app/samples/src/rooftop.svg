@@ -111,6 +111,14 @@
     <path d="M950 953 L950 1048" fill="none"/>
   </g>
 
+  <!-- a pigeon holding court on the railing -->
+  <g fill="#0d0518">
+    <ellipse cx="618" cy="949" rx="21" ry="12"/>
+    <circle cx="635" cy="937" r="8"/>
+    <path d="M598 948 L574 939 L599 959 Z"/>
+    <path d="M612 960 L612 967 M624 960 L624 967" stroke="#0d0518" stroke-width="3" fill="none"/>
+  </g>
+
   <!-- string lights sagging over the deck, with droppers and glows -->
   <path d="M40 830 Q300 940 560 872 Q800 818 972 884" stroke="#12081f" stroke-width="5" fill="none"/>
   <g stroke="#12081f" stroke-width="4">
@@ -136,4 +144,13 @@
   <rect x="716" y="1108" width="86" height="54" rx="8" fill="#c22e5e"/>
   <rect x="716" y="1108" width="86" height="14" rx="7" fill="#f4efe6"/>
   <rect x="748" y="1096" width="22" height="14" rx="4" fill="#f4efe6"/>
+
+  <!-- a planter box of shrubs keeping the chairs company -->
+  <g>
+    <g fill="#175733">
+      <circle cx="78" cy="1144" r="16"/><circle cx="110" cy="1133" r="21"/><circle cx="142" cy="1144" r="16"/>
+    </g>
+    <rect x="58" y="1150" width="100" height="42" rx="7" fill="#5d2140"/>
+    <rect x="58" y="1150" width="100" height="10" rx="5" fill="#7a2d52"/>
+  </g>
 </svg>

@@ -34,6 +34,7 @@
     <path d="M232 258 Q234 200 256 162 L278 176 Q260 218 254 262 Z"/>
     <path d="M176 300 Q132 282 124 240 Q160 240 182 272 Z"/>
   </g>
+  <circle cx="222" cy="206" r="7" fill="none" stroke="#ffd76e" stroke-width="4"/>
   <path d="M196 392 Q168 330 178 268 Q184 232 214 228 L220 392 Z" fill="#000000" opacity=".10"/>
 
   <!-- right arm bent, hand resting at the waist -->
@@ -42,6 +43,8 @@
   <g fill="#ffd76e">
     <circle cx="742" cy="742" r="5"/><circle cx="758" cy="756" r="5"/><circle cx="772" cy="738" r="5"/>
   </g>
+  <!-- a gold bangle above the resting hand -->
+  <circle cx="726" cy="722" r="13" fill="none" stroke="#ffd76e" stroke-width="6"/>
 
   <!-- trousers first, so the blazer hem overlaps them -->
   <g>
@@ -123,6 +126,8 @@
   <path d="M398 284 L602 284" stroke="#3a2312" stroke-width="10"/>
   <path d="M416 292 L470 292 L448 336 L420 336 Z" fill="#ffffff" opacity=".35"/>
   <path d="M522 292 L566 292 L550 330 L528 330 Z" fill="#ffffff" opacity=".25"/>
+  <path d="M452 296 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3 Z" fill="#ffffff" opacity=".85"/>
+  <path d="M556 322 l2 6 6 2 -6 2 -2 6 -2 -6 -6 -2 6 -2 Z" fill="#ffffff" opacity=".7"/>
 
   <!-- smile -->
   <path d="M458 420 Q500 450 542 420" stroke="#5f3418" stroke-width="9" fill="none" stroke-linecap="round"/>

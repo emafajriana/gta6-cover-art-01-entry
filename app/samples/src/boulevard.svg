@@ -50,6 +50,7 @@
     <path d="M700 170 q16 -13 32 0 q16 -13 32 0"/>
     <path d="M620 300 q12 -10 24 0 q12 -10 24 0"/>
   </g>
+  <path d="M742 96 l34 10 -34 10 8 -10 Z" fill="#2d1b4e" opacity=".55"/>
 
   <!-- near buildings with lit windows and neon boards -->
   <g>
@@ -62,6 +63,7 @@
       <rect x="815" y="545" width="26" height="34"/><rect x="865" y="545" width="26" height="34"/>
       <rect x="915" y="610" width="26" height="34"/><rect x="815" y="670" width="26" height="34"/>
       <rect x="890" y="720" width="26" height="34"/><rect x="940" y="545" width="26" height="34"/>
+      <rect x="155" y="680" width="26" height="34"/><rect x="865" y="660" width="26" height="34"/>
     </g>
     <rect x="52" y="800" width="120" height="52" rx="10" fill="none" stroke="#ff2e88" stroke-width="7"/>
     <rect x="828" y="790" width="120" height="52" rx="10" fill="none" stroke="#17c3e6" stroke-width="7"/>
@@ -71,6 +73,7 @@
 
   <!-- the boulevard: road in perspective with converging dashes -->
   <path d="M385 940 L615 940 L1000 1250 L0 1250 Z" fill="url(#road)"/>
+  <path d="M472 946 L528 946 L548 1250 L452 1250 Z" fill="#ffb37c" opacity=".16"/>
   <g fill="#ffe9a8">
     <path d="M492 960 L508 960 L506 990 L494 990 Z"/>
     <path d="M488 1015 L512 1015 L509 1060 L491 1060 Z"/>
