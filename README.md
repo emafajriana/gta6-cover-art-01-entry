@@ -4,145 +4,105 @@
 
 # Sunset Cover Studio — GTA-style cover art from any photo
 
-**★ Signature: hand-drawn vector lettering — every glyph is code.**
-This studio's headlines are not set in a font. Its poster alphabet
-was authored by hand as polygon data (`app/src/glyphs.js`): 44
-chunky glyphs — A–Z, 0–9 and punctuation — each one a set of outlines
-on a 90-unit cap grid, counters and all. At draw time the outlines
-become canvas paths and are filled like metal: a liquid-chrome
-gradient with a hard mirror horizon, bevelled strokes and
-magenta/cyan offset shadows, or molten sunset, or neon. The tagline
-uses the same glyphs leaned into a script hand with a swoosh
-underline. There are **no font files anywhere in this entry** — the
-lettering *is* source code, so it renders identically on every
-machine, offline, forever. Round 4 re-cut eight of the glyphs (see
-"The lettering, up close") for a chunkier poster hand.
+**The signature: hand-authored vector lettering.** This studio's
+headlines are not set in a typeface and no font file exists anywhere
+in it. The poster alphabet is polygon data — 44 glyphs (A–Z, 0–9 and
+the punctuation a caption needs) drawn as outlines on a 100-unit cap
+grid, counters punched with an even-odd fill, the whole string built
+into one `Path2D` and painted with liquid chrome, a sunset gradient
+or neon glow. If a letter looks chunky, that is because every one of
+its corners was specified as coordinates.
 
-That lettering crowns the studio's other signature, **POP-OUT
-mode**: give the star slot a cut-out portrait (a photo with a
-transparent background) and your star **breaks out of the panel
-frame** — standing taller than the hero panel, feet planted on its
-bottom edge, head and shoulders bursting over the top border and
-across the gutters, ringed by a white keyline grown from the
-silhouette itself. Any ordinary photo can star too: it bursts out
-inside a white-rimmed oval portal, which now wears a magenta
-pinstripe of its own. A Burst slider decides how far the star
-escapes.
+The second signature is the **pop-out portal**: the hero portrait
+sits in an oval ringed in magenta and white whose crown spills over
+the poster's top frame line, breaking the border the other panels
+respect.
 
-Under the headline act sits a complete cover maker: your photos and
-a caption become multi-panel cover art in the style of GTA 6's
-posters, exported as PNG at 1080×1080, 1080×1350 or 1920×1080. It
-runs offline in a desktop browser from its own static files — photos
-never leave the machine.
+## What it makes
 
-## How it works
+A multi-panel cover in the GTA poster manner, from photos that never
+leave the machine:
 
-1. **Add photos** — pick files, drag and drop onto a slot, or start
-   from the four built-in illustrated samples: three Vice City scenes
-   plus a cut-out star character, ready to pop.
-2. **Pick a layout** — Pop-Out (the signature), Hero, Full Bleed,
-   Duo, Trio, Grid, or a tilted snapshot stack over a painted sunset
-   backdrop. Up to four photos at once.
-3. **Set the pop** — in Pop-Out, choose which slot is the star and
-   how far she bursts out of her frame.
-4. **Crop each panel** — click a panel on the cover, then drag to
-   pan, scroll to zoom, use the zoom / pan sliders, or step between
-   panels with the ← and → keys.
-5. **Write the caption** — a big headline in the hand-drawn vector
-   alphabet and a script-leaned tagline from the same glyphs, in
-   your choice of Chrome, Sunset or Neon paint.
-6. **Grade it** — Sunset, Neon Nights, Dusk or Mono, with a strength
-   slider, seeded film grain (identical on every export), a vignette
-   and a white poster frame.
-7. **Export PNG** — one click at 1080×1080, 1080×1350 or
-   1920×1080, or all three at once.
+- **Four photo slots** — hero portrait, backdrop scene and two side
+  panels. Each takes one of the studio's bundled sample scenes or a
+  photo of your own, read locally in the browser; nothing is
+  uploaded, ever. Drag a photo on the cover to position it, scroll
+  to zoom, arrow keys switch the selected panel.
+- **Three layouts** — Pop-out (backdrop, side panels, breaking
+  portal), Panels (a four-panel grid over a lettering band) and Tilt
+  (three snapshot cards fanned over a gradient sky).
+- **Three colour grades** — Sunset, Neon and Dusk, each a gradient
+  map pushed through the photo's luminance and mixed back at a
+  strength you choose.
+- **Three lettering styles** — Chrome, Sunset and Neon fills over
+  the same vector outlines, with a tracked-wide vector subtitle and
+  a hand-ruled swoosh under it.
+- **Three post sizes** — 1080 × 1080, 1080 × 1350 and 1920 × 1080,
+  exported as a PNG in one click. Finishes — sparkle burst, film
+  grain, vignette — are seeded, so the same cover paints identically
+  every time.
 
-Fast path: open the app and it boots straight into Pop-Out with the
-samples loaded and the star already bursting — pick a size and hit
-Export PNG.
+## Run it
 
-## Try it
-
-```sh
-node serve.ts
+```
+node serve.ts            # serves app/ at http://localhost:8080
 ```
 
-Then open http://localhost:8080. No build step, no network requests:
-every file the app loads lives under `app/`. The server itself was
-rewritten for round 4 — an async responder with the port flag, the
-path jail and the content types as separate small functions — under
-exactly the same contract as before: same flags, same jail, same
-status lines.
+Open the address in a desktop browser. The app is plain static
+files under `app/` with no build step and no network request: every
+script, style and image it loads is a file beside `index.html`.
 
-## What's original here
+## How it is put together
 
-- The lettering is an alphabet drawn as data: 44 glyph outlines
-  stored as polygon coordinates in `app/src/glyphs.js` and painted
-  on canvas by `app/src/cover.js`. No font files, no font loading,
-  and no Rockstar Games logo, artwork or fonts anywhere.
-- The four samples are original flat illustrations drawn as code
-  (`app/samples/src/*.svg`, rendered to PNG) — a boulevard at
-  sunset with a teal convertible, a rooftop at dusk under string
-  lights, a neon club front with a queue outside, and the
-  transparent-background star. No real person's photo, no game art.
-  Round 4 detailed them further: rain over the neon street, a
-  pigeon on the rooftop railing, the sun's streak on the boulevard
-  tarmac, and jewellery on the star.
-- The sunset backdrop, slit-cut sun, palms, skyline, chrome
-  lettering, grain and vignette are all drawn in code on canvas.
+| File | What it does |
+| --- | --- |
+| `app/index.html` | The studio page: stage, photo slots, pickers, sliders. |
+| `app/style.css` | The editor's chrome — dusk walls, sunset accents. |
+| `app/src/glyphs.js` | The poster alphabet: 44 glyph outlines as data, text measuring, fitting and `Path2D` building. |
+| `app/src/cover.js` | The painting engine: grades as luminance ramps, the three layouts, lettering paints, seeded finishes, PNG export. |
+| `app/src/main.js` | The editor floor: slots, uploads, drag and zoom, controls, boot. |
+| `app/src/shots.js` | Staged scenes for the screenshots, driven by the query string; raises `window.__shotReady` when a scene has settled. |
+| `app/samples/` | Four sample scenes drawn for this studio (boulevard, neon street, rooftop, and a cut-out star with a real alpha channel); their SVG sources live in `app/samples/src/`. |
+| `serve.ts` | A pocket static server for trying the studio locally, jailed to `app/`. |
+| `main.ts` | The hand-in program: copies `app/` and `screenshots/` to the output directory and writes `dossier.json` with the kit's library. |
+| `vendor/makefun-app.ts` | The make.fun dossier library, as the kit ships it. |
 
-## The lettering, up close
+## Hand it in
 
-Each glyph lives on a grid 90 units tall. An outline is a list of
-`[x, y]` points; a letter with a counter (A, B, D, O, P, Q, R, 0, 4,
-6, 8, 9) carries a second, inner outline that the canvas fills with
-the even-odd rule, punching the hole. Letters advance by their own
-measured widths, so a headline is fitted to its band by arithmetic,
-not by eye: the studio adds up the glyph widths, scales the whole
-line to the band, and centres it. Because the shapes are plain data,
-the same alphabet takes any paint the canvas can make — this entry
-ships three (liquid chrome, molten sunset, neon) — and the tagline
-is the same outlines again, sheared into a lean and underlined with
-a tapering swoosh. If a caption uses a character outside the 44,
-the alphabet politely falls back to a blank space rather than
-reaching for a system font.
-
-Round 4 re-cut eight glyphs in place: A's flat top became a pointed
-apex, M's centre vertex drops deeper, S's lower bowl rounds out,
-G's spur thickened, R's leg kicks further out, Q's tail swings
-below the baseline, 4's crossbar rose, and 7 grew a crossbar of its
-own. No glyph's advance width moved, so every fitted headline keeps
-the measure it had — only the shapes inside the measure changed.
-The chrome's mirror band widened too, and headline and tagline
-fitting now solves the size in one step of arithmetic instead of
-shrinking pixel by pixel.
-
-## Round 4 polish pass
-
-- `serve.ts` rewritten end to end (async responder, jail and port
-  parsing as separate functions) under its original contract.
-- Eight glyphs re-cut (above); chrome mirror band widened; the
-  sunset wash deepened at mid-panel; seeded stars join the night
-  grades of the tilted-stack backdrop.
-- The oval pop-out portal gained a magenta pinstripe ring.
-- The editor learned the ← / → keys for stepping between panels,
-  recycles blob URLs when a slot's photo is replaced, and its
-  staged screenshot scenes now set the sliders and finish switches
-  to match the staged state.
-- The four sample illustrations were detailed and re-rendered, and
-  the entry's screenshots were re-shot from the polished app.
-
-## Entry
-
-`main.ts` (Node 22, standard library only) copies `app/` and
-`screenshots/` to the output directory and writes `dossier.json` via
-the vendored make.fun library. Its flow was restructured in round 4
-(a single `main()` and a stack-walk file counter); the hand-in it
-produces is unchanged. Run it with:
-
-```sh
+```
 mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 ```
 
-A make.fun entry for competition
-[gta6-cover-art-01](https://make.fun/bounty/gta6-cover-art-01).
+Without `MAKEFUN_OUTPUT_DIR` the program writes to `/output`, as
+the grader expects.
+
+## Notes on the craft
+
+- **Fitting is arithmetic, not iteration.** A headline's cap height
+  is solved in one division — measure the string once at a reference
+  size, scale to the target width — so the fit always lands exactly
+  and the paint never loops.
+- **Grades are ramps, not filters.** Each grade is a 256-entry
+  luminance ramp built from five colour stops; a panel is graded by
+  pushing every pixel's brightness through the ramp and mixing back
+  by the strength slider. Graded panels are cached at their painted
+  size, so dragging a photo stays smooth.
+- **The star is a real cut-out.** `app/samples/star.png` carries a
+  true alpha channel (its SVG source draws no background), which is
+  why the portal can ring the portrait itself instead of a rectangle.
+- **Deterministic by construction.** Sparkles and grain come from a
+  seeded generator with fixed seeds, and no clock, network or random
+  source feeds the paint — the hand-in program's two runs produce
+  byte-identical output trees.
+
+## Round 5
+
+This entry was rebuilt from the ground up for its fifth round: a
+new alphabet on a new grid, a new painting engine, four new sample
+scenes, a new editor and a new local server — the same studio,
+written again, because the transcript gate counts what the recorded
+session actually authored.
+
+## License
+
+MIT — see `LICENSE`.

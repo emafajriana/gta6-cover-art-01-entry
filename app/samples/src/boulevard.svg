@@ -1,143 +1,84 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1250" width="1000" height="1250">
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#2d1b4e"/>
-      <stop offset=".38" stop-color="#83308e"/>
-      <stop offset=".62" stop-color="#e84393"/>
-      <stop offset=".8" stop-color="#ff7e5f"/>
-      <stop offset="1" stop-color="#ffb37c"/>
+      <stop offset="0" stop-color="#2a1450"/>
+      <stop offset=".42" stop-color="#93356b"/>
+      <stop offset=".68" stop-color="#ff7e47"/>
+      <stop offset=".85" stop-color="#ffb347"/>
+      <stop offset="1" stop-color="#ffd98a"/>
     </linearGradient>
     <linearGradient id="road" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#4a235a"/>
-      <stop offset="1" stop-color="#1d0b27"/>
-    </linearGradient>
-    <linearGradient id="sunCore" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#fff3b0"/>
-      <stop offset="1" stop-color="#ffb347"/>
-    </linearGradient>
-    <linearGradient id="carBody" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#2fd8c8"/>
-      <stop offset=".6" stop-color="#129e92"/>
-      <stop offset="1" stop-color="#065e58"/>
+      <stop offset="0" stop-color="#5a3a56"/>
+      <stop offset="1" stop-color="#241428"/>
     </linearGradient>
     <radialGradient id="sunGlow" cx=".5" cy=".5" r=".5">
-      <stop offset="0" stop-color="#ffdf8e" stop-opacity=".8"/>
-      <stop offset="1" stop-color="#ffdf8e" stop-opacity="0"/>
+      <stop offset="0" stop-color="#fff3b0" stop-opacity=".95"/>
+      <stop offset=".55" stop-color="#ffd166" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#ffd166" stop-opacity="0"/>
     </radialGradient>
   </defs>
 
   <rect width="1000" height="1250" fill="url(#sky)"/>
+  <circle cx="500" cy="800" r="330" fill="url(#sunGlow)"/>
+  <circle cx="500" cy="800" r="128" fill="#fff3b0"/>
+  <circle cx="500" cy="800" r="112" fill="#ffd166"/>
 
-  <!-- sun with retro slits, low over the horizon -->
-  <circle cx="500" cy="700" r="330" fill="url(#sunGlow)"/>
-  <circle cx="500" cy="700" r="185" fill="url(#sunCore)"/>
-  <g fill="#e84393">
-    <rect x="300" y="716" width="400" height="7"/>
-    <rect x="300" y="742" width="400" height="11"/>
-    <rect x="300" y="774" width="400" height="16"/>
-    <rect x="300" y="812" width="400" height="22"/>
+  <!-- distant towers on the horizon -->
+  <g fill="#4a2050">
+    <rect x="30" y="560" width="86" height="250"/>
+    <rect x="140" y="610" width="60" height="200"/>
+    <rect x="700" y="585" width="74" height="225"/>
+    <rect x="800" y="545" width="92" height="265"/>
+    <rect x="915" y="620" width="58" height="190"/>
+  </g>
+  <g fill="#ffd166" opacity=".75">
+    <rect x="52" y="590" width="12" height="16"/><rect x="84" y="630" width="12" height="16"/>
+    <rect x="722" y="615" width="12" height="16"/><rect x="826" y="580" width="12" height="16"/>
+    <rect x="856" y="640" width="12" height="16"/><rect x="152" y="645" width="10" height="14"/>
   </g>
 
-  <!-- far skyline -->
-  <g fill="#3a1650" opacity=".75">
-    <path d="M0 760 L0 640 L60 640 L60 600 L120 600 L120 660 L180 660 L180 580 L250 580 L250 700 L310 700 L310 620 L370 620 L370 760 Z"/>
-    <path d="M640 760 L640 610 L700 610 L700 660 L760 660 L760 570 L830 570 L830 650 L890 650 L890 600 L950 600 L950 690 L1000 690 L1000 760 Z"/>
+  <!-- the boulevard -->
+  <polygon points="0,1250 355,810 645,810 1000,1250" fill="url(#road)"/>
+  <polygon points="0,1250 0,810 355,810" fill="#3d2040"/>
+  <polygon points="1000,1250 1000,810 645,810" fill="#3d2040"/>
+  <g fill="#ffd98a">
+    <polygon points="492,830 508,830 506,880 494,880"/>
+    <polygon points="488,905 512,905 509,975 491,975"/>
+    <polygon points="482,1010 518,1010 513,1110 487,1110"/>
+    <polygon points="474,1160 526,1160 520,1250 480,1250"/>
   </g>
 
-  <!-- birds -->
-  <g stroke="#2d1b4e" stroke-width="6" fill="none" stroke-linecap="round" opacity=".7">
-    <path d="M180 240 q22 -18 44 0 q22 -18 44 0"/>
-    <path d="M700 170 q16 -13 32 0 q16 -13 32 0"/>
-    <path d="M620 300 q12 -10 24 0 q12 -10 24 0"/>
+  <!-- palms, left rank -->
+  <g fill="#1d0b27">
+    <path d="M120 1250 q14 -210 -6 -330 l26 0 q16 130 8 330 z"/>
+    <path d="M128 916 q-88 -44 -150 -18 q74 8 108 40 q-70 -16 -118 22 q66 -2 104 26 q-44 6 -66 40 q44 -22 84 -14 q26 4 44 26 q2 -34 22 -52 q30 -26 84 -30 q-52 -16 -92 2 q28 -30 84 -44 q-58 -6 -104 28z"/>
+    <path d="M255 1250 q10 -150 -4 -245 l20 0 q12 100 6 245 z"/>
+    <path d="M258 1002 q-64 -32 -110 -12 q54 6 80 30 q-52 -12 -88 16 q50 -2 78 20 q-34 4 -50 30 q34 -16 64 -10 q20 4 32 20 q2 -26 16 -40 q22 -20 62 -22 q-38 -12 -68 2 q20 -22 62 -32 q-44 -4 -78 22z"/>
   </g>
-  <path d="M742 96 l34 10 -34 10 8 -10 Z" fill="#2d1b4e" opacity=".55"/>
+  <!-- palms, right rank -->
+  <g fill="#1d0b27">
+    <path d="M880 1250 q-14 -210 6 -330 l-26 0 q-16 130 -8 330 z"/>
+    <path d="M872 916 q88 -44 150 -18 q-74 8 -108 40 q70 -16 118 22 q-66 -2 -104 26 q44 6 66 40 q-44 -22 -84 -14 q-26 4 -44 26 q-2 -34 -22 -52 q-30 -26 -84 -30 q52 -16 92 2 q-28 -30 -84 -44 q58 -6 104 28z"/>
+    <path d="M745 1250 q-10 -150 4 -245 l-20 0 q-12 100 -6 245 z"/>
+    <path d="M742 1002 q64 -32 110 -12 q-54 6 -80 30 q52 -12 88 16 q-50 -2 -78 20 q34 4 50 30 q34 -16 64 -10 q20 4 32 20 q-2 -26 -16 -40 q-22 -20 -62 -22 q38 -12 68 2 q-20 -22 -62 -32 q44 -4 78 22z"/>
+  </g>
 
-  <!-- near buildings with lit windows and neon boards -->
+  <!-- a convertible rolling into the sunset -->
   <g>
-    <rect x="0" y="520" width="215" height="420" fill="#241031"/>
-    <rect x="785" y="500" width="215" height="440" fill="#241031"/>
-    <g fill="#ffd76e" opacity=".9">
-      <rect x="30" y="560" width="26" height="34"/><rect x="80" y="560" width="26" height="34"/>
-      <rect x="130" y="620" width="26" height="34"/><rect x="30" y="680" width="26" height="34"/>
-      <rect x="155" y="560" width="26" height="34"/><rect x="80" y="740" width="26" height="34"/>
-      <rect x="815" y="545" width="26" height="34"/><rect x="865" y="545" width="26" height="34"/>
-      <rect x="915" y="610" width="26" height="34"/><rect x="815" y="670" width="26" height="34"/>
-      <rect x="890" y="720" width="26" height="34"/><rect x="940" y="545" width="26" height="34"/>
-      <rect x="155" y="680" width="26" height="34"/><rect x="865" y="660" width="26" height="34"/>
-    </g>
-    <rect x="52" y="800" width="120" height="52" rx="10" fill="none" stroke="#ff2e88" stroke-width="7"/>
-    <rect x="828" y="790" width="120" height="52" rx="10" fill="none" stroke="#17c3e6" stroke-width="7"/>
-    <circle cx="112" cy="826" r="12" fill="#ff2e88"/>
-    <path d="M852 826 l24 -14 l0 28 Z" fill="#17c3e6"/>
+    <path d="M238 1152 q10 -34 66 -40 l30 -44 q8 -12 30 -12 l120 0 q20 0 32 14 l26 40 q66 6 84 30 q10 14 6 32 l-14 6 q-6 -26 -38 -26 q-30 0 -36 26 l-148 0 q-6 -26 -36 -26 q-32 0 -38 26 l-58 0 q-28 -4 -26 -26z" fill="#160a20"/>
+    <rect x="330" y="1078" width="150" height="26" rx="9" fill="#0e0616"/>
+    <circle cx="330" cy="1180" r="34" fill="#0a0510"/>
+    <circle cx="330" cy="1180" r="17" fill="#8a7f96"/>
+    <circle cx="512" cy="1180" r="34" fill="#0a0510"/>
+    <circle cx="512" cy="1180" r="17" fill="#8a7f96"/>
+    <rect x="252" y="1136" width="26" height="10" rx="5" fill="#ffd166"/>
+    <rect x="566" y="1136" width="26" height="10" rx="5" fill="#ff5e8a"/>
   </g>
 
-  <!-- the boulevard: road in perspective with converging dashes -->
-  <path d="M385 940 L615 940 L1000 1250 L0 1250 Z" fill="url(#road)"/>
-  <path d="M472 946 L528 946 L548 1250 L452 1250 Z" fill="#ffb37c" opacity=".16"/>
-  <g fill="#ffe9a8">
-    <path d="M492 960 L508 960 L506 990 L494 990 Z"/>
-    <path d="M488 1015 L512 1015 L509 1060 L491 1060 Z"/>
-    <path d="M483 1090 L517 1090 L512 1150 L488 1150 Z"/>
-    <path d="M476 1190 L524 1190 L518 1250 L482 1250 Z"/>
-  </g>
-  <g stroke="#ff5e8a" stroke-width="5" opacity=".8">
-    <path d="M385 940 L0 1250"/>
-    <path d="M615 940 L1000 1250"/>
-  </g>
-
-  <!-- streetlights marching down both sidewalks -->
-  <g stroke="#ffd76e" stroke-width="6">
-    <path d="M330 950 L330 880"/><path d="M255 1030 L255 940"/><path d="M150 1140 L150 1020"/>
-    <path d="M670 950 L670 880"/><path d="M745 1030 L745 940"/><path d="M850 1140 L850 1020"/>
-  </g>
-  <g fill="#fff3b0">
-    <circle cx="330" cy="872" r="11"/><circle cx="255" cy="932" r="13"/>
-    <circle cx="150" cy="1010" r="16"/><circle cx="670" cy="872" r="11"/>
-    <circle cx="745" cy="932" r="13"/><circle cx="850" cy="1010" r="16"/>
-  </g>
-
-  <!-- palms leaning over the sidewalks -->
-  <g stroke="#170a24" fill="#170a24">
-    <path d="M120 980 q-8 -120 -34 -190 l14 -4 q28 74 34 190 Z"/>
-    <g stroke-width="9" fill="none" stroke-linecap="round">
-      <path d="M96 780 q-60 -44 -104 -30"/>
-      <path d="M96 780 q-30 -62 -78 -72"/>
-      <path d="M96 780 q6 -66 -26 -96"/>
-      <path d="M96 780 q44 -52 88 -48"/>
-      <path d="M96 780 q62 -26 100 4"/>
-    </g>
-    <path d="M880 980 q8 -120 34 -190 l-14 -4 q-28 74 -34 190 Z"/>
-    <g stroke-width="9" fill="none" stroke-linecap="round">
-      <path d="M904 780 q60 -44 104 -30"/>
-      <path d="M904 780 q30 -62 78 -72"/>
-      <path d="M904 780 q-6 -66 26 -96"/>
-      <path d="M904 780 q-44 -52 -88 -48"/>
-      <path d="M904 780 q-62 -26 -100 4"/>
-    </g>
-  </g>
-
-  <!-- a teal convertible cruising toward the viewer -->
-  <g>
-    <ellipse cx="500" cy="1090" rx="250" ry="28" fill="#000000" opacity=".35"/>
-    <path d="M268 1078 Q272 1000 340 978 L660 978 Q728 1000 732 1078 Q732 1112 690 1116 L310 1116 Q268 1112 268 1078 Z" fill="url(#carBody)"/>
-    <path d="M318 984 Q340 910 430 896 L586 896 Q664 910 684 984 Q560 962 500 962 Q440 962 318 984 Z" fill="#0b3d4a"/>
-    <rect x="352" y="908" width="296" height="14" rx="7" fill="#bfefff" opacity=".55"/>
-    <circle cx="556" cy="878" r="27" fill="#241126"/>
-    <path d="M520 908 Q524 872 556 870 Q590 872 592 908 Z" fill="#241126"/>
-    <path d="M600 902 Q652 884 690 898" stroke="#241126" stroke-width="13" fill="none" stroke-linecap="round"/>
-    <rect x="356" y="1038" width="288" height="26" rx="12" fill="#0a2e33"/>
-    <circle cx="322" cy="1050" r="21" fill="#fff6c8"/>
-    <circle cx="678" cy="1050" r="21" fill="#fff6c8"/>
-    <circle cx="322" cy="1050" r="21" fill="none" stroke="#ffd76e" stroke-width="4"/>
-    <circle cx="678" cy="1050" r="21" fill="none" stroke="#ffd76e" stroke-width="4"/>
-    <rect x="452" y="1080" width="96" height="28" rx="5" fill="#f4efe6"/>
-    <g fill="#22303a">
-      <rect x="466" y="1089" width="10" height="12"/><rect x="482" y="1089" width="10" height="12"/>
-      <rect x="498" y="1089" width="10" height="12"/><rect x="514" y="1089" width="10" height="12"/>
-    </g>
-    <circle cx="330" cy="1116" r="34" fill="#12060f"/>
-    <circle cx="670" cy="1116" r="34" fill="#12060f"/>
-    <circle cx="330" cy="1116" r="15" fill="#cfd8dc"/>
-    <circle cx="670" cy="1116" r="15" fill="#cfd8dc"/>
+  <!-- gulls -->
+  <g stroke="#2a1450" stroke-width="6" fill="none" stroke-linecap="round">
+    <path d="M238 300 q16 -14 32 0 q16 -14 32 0"/>
+    <path d="M640 220 q13 -11 26 0 q13 -11 26 0"/>
+    <path d="M730 350 q11 -9 22 0 q11 -9 22 0"/>
   </g>
 </svg>

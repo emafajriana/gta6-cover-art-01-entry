@@ -1,83 +1,79 @@
-// shots.js — staged scenes for the entry's screenshots, driven by
-// the query string:
-//   ?shot=cover&photo=boulevard&layout=popout&grade=sunset&titlestyle=chrome&caption=Sunset%20Heist&size=wide
-//   ?shot=editor&photo=rooftop&layout=popout&grade=neon&caption=Neon%20Nights&size=wide
-// `cover` hides the control rail and shows the poster edge to edge
+// app/src/shots.js — staged scenes for the entry's screenshots.
+//
+// The screenshot driver opens the studio with a query string that
+// casts and dresses a cover, for example:
+//   ?shot=cover&hero=star&back=boulevard&layout=popout&grade=sunset
+//     &titlestyle=chrome&caption=Sunset%20Heist&size=wide
+//   ?shot=editor&hero=rooftop&grade=neon&caption=Neon%20Nights
+// `cover` hides the editor chrome and shows the poster edge to edge
 // (the app's own drawing of an exported cover); `editor` shows the
-// studio with its cast loaded. Once the staged cover has painted,
-// window.__shotReady flips true so the screenshot can wait on it.
+// whole studio with the staged state in its controls. When the
+// staged paint has settled, window.__shotReady flips true — that is
+// the signal the screenshot waits on, so no capture is ever taken
+// of a half-loaded scene.
 
-const LAYOUT_ORDER = ['popout', 'hero', 'full', 'duo', 'trio', 'grid', 'tilt'];
-const GRADE_ORDER = ['sunset', 'neon', 'dusk', 'mono'];
-const SIZE_ORDER = ['square', 'portrait', 'wide'];
-const STYLE_ORDER = ['chrome', 'sunset', 'neon'];
-const SCENES = ['boulevard', 'rooftop', 'neon'];
-const SIZE_LABELS = { square: '1080 × 1080', portrait: '1080 × 1350', wide: '1920 × 1080' };
+const LAYOUTS = ['popout', 'panels', 'tilt'];
+const GRADES = ['sunset', 'neon', 'dusk'];
+const TITLE_STYLES = ['chrome', 'sunset', 'neon'];
+const SIZES = ['square', 'portrait', 'wide'];
 
-function pick(order, value, fallback) {
-  return order.includes(value) ? value : fallback;
+// The default cast: the cut-out star in the hero slot (someone has
+// to burst out of the portal), the boulevard behind, neon and
+// rooftop in the side panels.
+const DEFAULT_CAST = { hero: 'star', back: 'boulevard', left: 'neon', right: 'rooftop' };
+
+function pick(list, value, fallback) {
+  return list.includes(value) ? value : fallback;
 }
 
-function pressSeg(id, order, key) {
-  document.querySelectorAll(`#${id} button`).forEach((b, i) => {
-    b.setAttribute('aria-pressed', String(order[i] === key));
-  });
+function numberParam(query, name, target, min, max) {
+  const raw = query.get(name);
+  if (raw === null) return;
+  const n = Number(raw);
+  if (Number.isFinite(n)) target[name] = Math.min(max, Math.max(min, n));
 }
 
-export async function runShot(shot, query, api) {
-  const { state, redraw, loadSample, setStatus, samples } = api;
-  const photo = query.get('photo') || 'boulevard';
+// Applies a query string to the studio. env.loadSample(slot, name)
+// loads one bundled sample into a slot and resolves when it is
+// painted-ready; env.syncUI() pushes the state into the editor's
+// controls so an editor screenshot shows the staged numbers, not
+// the boot defaults. Returns true when a shot was staged.
+export async function stageFromQuery(studio, env) {
+  const query = new URLSearchParams(window.location.search);
+  const shot = query.get('shot');
+  if (shot !== 'cover' && shot !== 'editor') return false;
 
-  state.layout = pick(LAYOUT_ORDER, query.get('layout'), 'popout');
-  state.grade = pick(GRADE_ORDER, query.get('grade'), 'sunset');
-  state.titleStyle = pick(STYLE_ORDER, query.get('titlestyle'), 'chrome');
-  state.title = query.get('caption') || 'Sunset Heist';
-  state.subtitle = query.get('subtitle') || 'a vice city story';
-  state.size = pick(SIZE_ORDER, query.get('size'), 'square');
-  if (query.get('titleSize')) state.titleSize = Number(query.get('titleSize'));
-  if (query.get('gradeIntensity')) state.gradeIntensity = Number(query.get('gradeIntensity'));
-  if (query.get('burst')) state.burst = Number(query.get('burst'));
-
-  // The visible controls tell the same story as the staged state.
-  document.getElementById('title').value = state.title;
-  document.getElementById('subtitle').value = state.subtitle;
-  pressSeg('layouts', LAYOUT_ORDER, state.layout);
-  pressSeg('grades', GRADE_ORDER, state.grade);
-  pressSeg('sizes', SIZE_ORDER, state.size);
-  pressSeg('titleStyles', STYLE_ORDER, state.titleStyle);
-  document.getElementById('popoutControls').style.display =
-    state.layout === 'popout' ? '' : 'none';
-  document.getElementById('exportSize').textContent = SIZE_LABELS[state.size];
-
-  // The sliders and finish switches tell the same story too: an
-  // editor scene shows the staged numbers, not whatever the rail
-  // happened to boot with.
-  for (const [id, value] of [['titleSize', state.titleSize], ['gradeIntensity', state.gradeIntensity], ['burst', state.burst]]) {
-    const el = document.getElementById(id);
-    if (el && value != null) el.value = value;
-  }
-  for (const [id, value] of [['frame', state.frame], ['grain', state.grain], ['vignette', state.vignette]]) {
-    const el = document.getElementById(id);
-    if (el && value != null) el.checked = value;
+  const { state } = studio;
+  state.layout = pick(LAYOUTS, query.get('layout'), state.layout);
+  state.grade = pick(GRADES, query.get('grade'), state.grade);
+  state.titleStyle = pick(TITLE_STYLES, query.get('titlestyle'), state.titleStyle);
+  state.size = pick(SIZES, query.get('size'), state.size);
+  if (query.get('caption') !== null) state.caption = query.get('caption');
+  if (query.get('subtitle') !== null) state.subtitle = query.get('subtitle');
+  numberParam(query, 'burst', state, 0, 1);
+  numberParam(query, 'gradeStrength', state, 0, 1);
+  // titleSize in the query is the state's titleScale under its
+  // screenshot name.
+  const titleSize = Number(query.get('titleSize'));
+  if (query.get('titleSize') !== null && Number.isFinite(titleSize)) {
+    state.titleScale = Math.min(1.6, Math.max(0.5, titleSize));
   }
 
-  // Cast the cover: the chosen scene takes the hero slot, the other
-  // two scenes fill the column, and the cut-out star takes the star
-  // slot, so a Pop-Out scene always has someone to burst out.
-  const cast = [photo, ...SCENES.filter((s) => s !== photo)];
-  for (let i = 0; i < cast.length; i++) {
-    await loadSample(i, cast[i]);
+  const cast = { ...DEFAULT_CAST };
+  for (const slot of Object.keys(DEFAULT_CAST)) {
+    if (query.get(slot)) cast[slot] = query.get(slot);
   }
-  await loadSample(state.starSlot, samples.includes('star') ? 'star' : cast[0]);
-  state.panelPhoto = [0, 1, 2, 0];
+  if (query.get('photo')) cast.back = query.get('photo');
+  for (const slot of Object.keys(cast)) {
+    await env.loadSample(slot, cast[slot]);
+  }
 
   if (shot === 'cover') document.body.classList.add('shot-cover');
-  if (setStatus) setStatus('');
-
-  // The lettering is vector paths — nothing loads before the paint —
-  // so paint, let two frames settle, and declare the scene ready.
-  redraw();
+  env.syncUI();
+  studio.render();
+  // Two frames settle the paint before the capture is allowed.
   await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-  redraw();
+  studio.render();
   window.__shotReady = true;
+  return true;
 }
